@@ -64,16 +64,16 @@ bool abb_insertar(abb_t *abb, const void *elemento)
 		padre = actual;
 		cmp = abb->comparador(elemento, actual->dato);
 		if (cmp < 0) {
-			actual = actual->izquierda;
+			actual = actual->izq;
 		} else {
-			actual = actual->derecha;
+			actual = actual->der;
 		}
 	}
 
 	if (cmp < 0) {
-		padre->izquierda = nuevo_nodo;
+		padre->izq = nuevo_nodo;
 	} else {
-		padre->derecha = nuevo_nodo;
+		padre->der = nuevo_nodo;
 	}
 
 	abb->nodos++;
@@ -86,8 +86,8 @@ void destruir_nodo_rec(nodo_t *nodo, void (*destructor)(void *))
 		return;
 	}
 
-	destruir_nodo_rec(nodo->izquierda, destructor);
-	destruir_nodo_rec(nodo->derecha, destructor);
+	destruir_nodo_rec(nodo->izq, destructor);
+	destruir_nodo_rec(nodo->der, destructor);
 
 	if (destructor) {
 		destructor(nodo->dato);

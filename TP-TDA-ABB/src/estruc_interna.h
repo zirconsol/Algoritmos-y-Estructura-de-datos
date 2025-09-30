@@ -5,8 +5,8 @@
 
 typedef struct nodo {
 	void *dato;
-	struct nodo *izquierda;
-	struct nodo *derecha;
+	struct nodo *izq;
+	struct nodo *der;
 } nodo_t;
 
 struct abb_t {
