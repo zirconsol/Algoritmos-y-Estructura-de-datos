@@ -39,12 +39,15 @@ void *abb_buscar(const abb_t *abb, const void *elemento);
  * 
  * Devuelve el elemento eliminado si existe, NULL si no existe o en caso de error.
  */
-void *abb_sacar(abb_t *abb, const void *elemento);
+void *abb_eliminar(abb_t *abb, const void *elemento);
 
 /**
  * Devuelve la cantidad de elementos en el ABB.
  */
-size_t abb_tamanio(const abb_t *abb);
+
+void *abb_raiz(abb_t *abb);
+
+size_t abb_cantidad(const abb_t *abb);
 
 /**
  * Devuelve true si el ABB está vacío, false si no lo está.
@@ -58,16 +61,16 @@ bool abb_vacio(const abb_t *abb);
  * 
  * Devuelve la cantidad de elementos recorridos.
  */
-size_t abb_recorrer(const abb_t *abb, enum abb_recorrido modo,
-		    bool (*f)(void *, void *), void *ctx);
+size_t abb_con_cada_elemento(const abb_t *abb, enum abb_recorrido modo,
+			     bool (*f)(void *, void *), void *extra);
 
 /**
  * Recorre el ABB en el orden indicado y guarda los elementos en el vector, sin exceder la capacidad.
  * 
  * Devuelve la cantidad de elementos guardados.
  */
-size_t abb_vectorizar(const abb_t *abb, enum abb_recorrido modo, void **vector,
-		      size_t capacidad);
+size_t abb_vectorizar(const abb_t *abb, enum abb_recorrido modo, size_t cant,
+		      void **vector);
 
 /**
  * Destruye el ABB y libera toda la memoria asignada.
