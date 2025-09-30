@@ -27,7 +27,7 @@ bool abb_vacio(const abb_t *abb)
 	return abb->raiz == NULL;
 }
 
-size_t abb_tamanio(const abb_t *abb)
+size_t abb_cantidad(const abb_t *abb)
 {
 	if (!abb) {
 		return 0;
@@ -78,7 +78,6 @@ bool abb_insertar(abb_t *abb, const void *elemento)
 
 	abb->nodos++;
 	return true;
-	//3 POSIBILIDADES, PRIMER NODO ES EL NODO RAIZ. SEGUNDO NODO SE INSERTA LUEGO DE COMPARAR CON RAIZ, Y ASI SUCESIVAMENTE.
 }
 
 void destruir_nodo_rec(nodo_t *nodo, void (*destructor)(void *))
