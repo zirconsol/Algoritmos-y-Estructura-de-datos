@@ -1,5 +1,6 @@
 #include "abb.h"
 #include "estruc_interna.h"
+#include "abb_eliminar.c"
 
 abb_t *abb_crear(int (*cmp)(const void *, const void *))
 {
@@ -25,6 +26,13 @@ bool abb_vacio(const abb_t *abb)
 	}
 
 	return abb->raiz == NULL;
+}
+
+bool abb_existe(const abb_t *abb, const void *elemento)
+{
+	if (!abb) {
+		return false;
+	}
 }
 
 size_t abb_cantidad(const abb_t *abb)
