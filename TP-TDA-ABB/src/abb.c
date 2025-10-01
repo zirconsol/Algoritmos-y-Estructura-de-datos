@@ -28,11 +28,50 @@ bool abb_vacio(const abb_t *abb)
 	return abb->raiz == NULL;
 }
 
+void *abb_raiz(abb_t *abb)
+{
+	if (!abb || !abb->raiz) {
+		return NULL;
+	}
+
+	return abb->raiz;
+}
+
 bool abb_existe(const abb_t *abb, const void *elemento)
 {
-	if (!abb) {
-		return false;
+	bool nodo_existe = false;
+
+	if (abb && abb->raiz) {
+		nodo_t *nodo = abb->raiz;
+		while (nodo && !nodo_existe) {
+			int comparacion = abb->comparador(elemento, nodo->dato);
+
+			if (comparacion == 0) {
+				nodo_existe = true;
+			} else if (comparacion < 0) {
+				nodo = nodo->izq;
+			} else {
+				nodo = nodo->der;
+			}
+		}
+		return nodo_existe;
 	}
+
+	/*primero comparo contra la raiz para ver que rama tomar
+
+si el comparador da <0 agarramos comparamos contra hijo derecho
+
+si el comparador da >0, comparamos contra el hijo izquierdo
+
+si el comparador da 0, encontramos el elemento.
+
+llamada recursiva  para repetir con el padre.
+
+se repite hasta que comparador = 0 o caso invalido*/
+}
+
+void comparar_recursivamente(abb_t *abb, nodo_t nodo, void *elemento)
+{
 }
 
 size_t abb_cantidad(const abb_t *abb)
