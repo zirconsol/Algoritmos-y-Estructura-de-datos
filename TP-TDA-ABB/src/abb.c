@@ -20,38 +20,6 @@ abb_t *abb_crear(int (*cmp)(const void *, const void *))
 	return arbol;
 }
 
-bool abb_vacio(const abb_t *abb)
-{
-	if (!abb) {
-		return true;
-	}
-
-	return abb->raiz == NULL;
-}
-
-void *abb_raiz(abb_t *abb)
-{
-	if (!abb || !abb->raiz) {
-		return NULL;
-	}
-
-	return abb->raiz;
-}
-
-void comparar_recursivamente(abb_t *abb, nodo_t nodo, void *elemento)
-{
-	return;
-}
-
-size_t abb_cantidad(const abb_t *abb)
-{
-	if (!abb) {
-		return 0;
-	}
-
-	return abb->nodos;
-}
-
 bool abb_insertar(abb_t *abb, const void *elemento)
 {
 	if (abb == NULL || abb->comparador == NULL)
@@ -68,6 +36,11 @@ bool abb_insertar(abb_t *abb, const void *elemento)
 	return insertado;
 }
 
+bool abb_existe(const abb_t *abb, const void *elemento)
+{
+	return false;
+}
+
 void *abb_buscar(const abb_t *abb, const void *elemento)
 {
 	if (abb != NULL && abb->comparador != NULL) {
@@ -77,19 +50,52 @@ void *abb_buscar(const abb_t *abb, const void *elemento)
 	return NULL;
 }
 
-void destruir_nodo_rec(nodo_t *nodo, void (*destructor)(void *))
+void *abb_raiz(abb_t *abb)
 {
-	if (!nodo) {
+	if (!abb || !abb->raiz) {
+		return NULL;
+	}
+
+	return abb->raiz;
+}
+
+size_t abb_cantidad(const abb_t *abb)
+{
+	if (!abb) {
+		return 0;
+	}
+
+	return abb->nodos;
+}
+
+bool abb_vacio(const abb_t *abb)
+{
+	if (!abb) {
+		return true;
+	}
+
+	return abb->raiz == NULL;
+}
+
+void abb_recorrer(const struct abb_t *abb, enum abb_recorrido orden,
+		  void (*f)(void *, void *), void *extra)
+{
+	if (abb == NULL || f == NULL)
 		return;
-	}
 
-	destruir_nodo_rec(nodo->izq, destructor);
-	destruir_nodo_rec(nodo->der, destructor);
-
-	if (destructor) {
-		destructor(nodo->dato);
+	switch (orden) {
+	case ABB_INORDEN:
+		abb_inorden_rec(abb->raiz, f, extra);
+		break;
+	case ABB_PREORDEN:
+		abb_preorden_rec(abb->raiz, f, extra);
+		break;
+	case ABB_POSTORDEN:
+		abb_postorden_rec(abb->raiz, f, extra);
+		break;
+	default:
+		break;
 	}
-	free(nodo);
 }
 
 void abb_destruir(abb_t *abb)

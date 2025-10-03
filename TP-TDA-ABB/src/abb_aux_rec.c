@@ -43,3 +43,48 @@ void *abb_buscar_nodo_rec(nodo_t *nodo, const void *dato,
 		return abb_buscar_nodo_rec(nodo->der, dato, comparador);
 	}
 }
+
+void abb_inorden_rec(nodo_t *nodo, void (*f)(void *, void *), void *extra)
+{
+	if (nodo == NULL) {
+		return NULL;
+	}
+	abb_inorden_rec(nodo->izq, f, extra);
+	f(nodo->dato, extra);
+	abb_inorden_rec(nodo->der, f, extra);
+}
+
+void abb_preorden_rec(nodo_t *nodo, void (*f)(void *, void *), void *extra)
+{
+	if (nodo == NULL) {
+		return NULL;
+	}
+	f(nodo->dato, extra);
+	abb_preorden_rec(nodo->izq, f, extra);
+	abb_preorden_rec(nodo->der, f, extra);
+}
+
+void abb_postorden_rec(nodo_t *nodo, void (*f)(void *, void *), void *extra)
+{
+	if (nodo == NULL) {
+		return NULL;
+	}
+	abb_postorden_rec(nodo->izq, f, extra);
+	abb_postorden_rec(nodo->der, f, extra);
+	f(nodo->dato, extra);
+}
+
+void destruir_nodo_rec(nodo_t *nodo, void (*destructor)(void *))
+{
+	if (!nodo) {
+		return;
+	}
+
+	destruir_nodo_rec(nodo->izq, destructor);
+	destruir_nodo_rec(nodo->der, destructor);
+
+	if (destructor) {
+		destructor(nodo->dato);
+	}
+	free(nodo);
+}
