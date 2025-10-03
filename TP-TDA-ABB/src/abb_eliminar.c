@@ -6,12 +6,12 @@ void reconectar_arbol(abb_t *abb, nodo_t *padre, nodo_t *nodo_viejo,
 {
 	if (padre) {
 		if (padre->izq == nodo_viejo) {
-			padre->izq == nodo_nuevo;
+			padre->izq = nodo_nuevo;
 		} else {
-			padre->der == nodo_nuevo;
+			padre->der = nodo_nuevo;
 		}
 	} else {
-		abb->raiz == nodo_nuevo;
+		abb->raiz = nodo_nuevo;
 	}
 }
 
