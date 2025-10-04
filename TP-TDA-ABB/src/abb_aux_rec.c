@@ -44,34 +44,77 @@ void *abb_buscar_nodo_rec(nodo_t *nodo, const void *dato,
 	}
 }
 
-void abb_inorden_rec(nodo_t *nodo, void (*f)(void *, void *), void *extra)
+size_t abb_inorden_rec(nodo_t *nodo, bool (*f)(void *, void *), void *extra)
 {
 	if (nodo == NULL) {
-		return NULL;
+		return 0;
 	}
-	abb_inorden_rec(nodo->izq, f, extra);
-	f(nodo->dato, extra);
-	abb_inorden_rec(nodo->der, f, extra);
+	size_t nodos_visitados = 0;
+
+	if (abb_inorden_rec(nodo->izq, f, extra)) {
+		nodos_visitados++;
+	}
+
+	if (!f(nodo->dato, extra)) {
+		return nodos_visitados + 1;
+	}
+
+	nodos_visitados++;
+
+	if (abb_inorden_rec(nodo->der, f, extra)) {
+		nodos_visitados++;
+	}
+
+	return nodos_visitados;
 }
 
-void abb_preorden_rec(nodo_t *nodo, void (*f)(void *, void *), void *extra)
+size_t abb_preorden_rec(nodo_t *nodo, bool (*f)(void *, void *), void *extra)
 {
 	if (nodo == NULL) {
-		return NULL;
+		return 0;
 	}
-	f(nodo->dato, extra);
-	abb_preorden_rec(nodo->izq, f, extra);
-	abb_preorden_rec(nodo->der, f, extra);
+
+	size_t nodos_visitados = 0;
+
+	if (!f(nodo->dato, extra)) {
+		return 1;
+	}
+	nodos_visitados++;
+
+	if (abb_preorden_rec(nodo->izq, f, extra)) {
+		nodos_visitados++;
+	}
+
+	if (abb_preorden_rec(nodo->der, f, extra)) {
+		nodos_visitados++;
+	}
+
+	return nodos_visitados;
 }
 
-void abb_postorden_rec(nodo_t *nodo, void (*f)(void *, void *), void *extra)
+size_t abb_postorden_rec(nodo_t *nodo, bool (*f)(void *, void *), void *extra)
 {
 	if (nodo == NULL) {
-		return NULL;
+		return 0;
 	}
-	abb_postorden_rec(nodo->izq, f, extra);
-	abb_postorden_rec(nodo->der, f, extra);
-	f(nodo->dato, extra);
+
+	size_t nodos_visitados = 0;
+
+	if (abb_postorden_rec(nodo->izq, f, extra)) {
+		nodos_visitados++;
+	}
+
+	if (abb_postorden_rec(nodo->der, f, extra)) {
+		nodos_visitados++;
+	}
+
+	if (!f(nodo->dato, extra)) {
+		return nodos_visitados + 1;
+	}
+
+	nodos_visitados++;
+
+	return nodos_visitados;
 }
 
 void destruir_nodo_rec(nodo_t *nodo, void (*destructor)(void *))

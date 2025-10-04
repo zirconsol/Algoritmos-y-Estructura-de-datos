@@ -5,83 +5,32 @@
 
 enum abb_recorrido { ABB_INORDEN, ABB_PREORDEN, ABB_POSTORDEN };
 
-typedef struct abb_t abb_t;
+typedef struct abb abb_t;
 
-/**
- * Crea un ABB vacío con el comparador dado.abb_buscar
- * En caso de error devuelve NULL.
- */
-abb_t *abb_crear(int (*cmp)(const void *, const void *));
+abb_t *abb_crear(int (*comparador)(const void *, const void *));
 
-/**
- * Inserta un elemento en el ABB. Admite elementos repetidos.
- * 
- * Devuelve true si se pudo insertar el elemento, false si no pudo.
- */
-bool abb_insertar(abb_t *abb, const void *elemento);
+bool abb_insertar(abb_t *abb, void *dato);
 
-/**
- * Busca un elemento en el ABB.
- * 
- * Devuelve true si el elemento existe, false si no existe o en caso de error.
- */
-bool abb_existe(const abb_t *abb, const void *elemento);
+bool abb_existe(abb_t *abb, void *dato);
 
-/**
- * Busca un elemento en el ABB y lo devuelve.
- * 
- * Devuelve el elemento si existe, NULL si no existe o en caso de error.
- */
-void *abb_buscar(const abb_t *abb, const void *elemento);
+void *abb_buscar(abb_t *abb, void *dato);
 
-/**
- * Busca un elemento en el ABB y lo elimina.
- * 
- * Devuelve el elemento eliminado si existe, NULL si no existe o en caso de error.
- */
-void *abb_eliminar(abb_t *abb, const void *elemento);
-
-/**
- * Devuelve la cantidad de elementos en el ABB.
- */
+void *abb_eliminar(abb_t *abb, void *dato);
 
 void *abb_raiz(abb_t *abb);
 
-size_t abb_cantidad(const abb_t *abb);
+size_t abb_cantidad(abb_t *abb);
 
-/**
- * Devuelve true si el ABB está vacío, false si no lo está.
- * 
- * Un árbol que no existe también se considera vacío.
- */
-bool abb_vacio(const abb_t *abb);
+bool abb_esta_vacio(abb_t *abb);
 
-/**
- * Recorre el ABB en el orden indicado y aplica la función f a cada elemento.
- * 
- * Devuelve la cantidad de elementos recorridos.
- */
-size_t abb_con_cada_elemento(const abb_t *abb, enum abb_recorrido modo,
+size_t abb_con_cada_elemento(abb_t *abb, enum abb_recorrido tipo_recorrido,
 			     bool (*f)(void *, void *), void *extra);
 
-/**
- * Recorre el ABB en el orden indicado y guarda los elementos en el vector, sin exceder la capacidad.
- * 
- * Devuelve la cantidad de elementos guardados.
- */
-size_t abb_vectorizar(const abb_t *abb, enum abb_recorrido modo, size_t cant,
-		      void **vector);
+size_t abb_vectorizar(abb_t *abb, enum abb_recorrido tipo_recorrido,
+		      size_t cant, void **vector);
 
-/**
- * Destruye el ABB y libera toda la memoria asignada.
- */
 void abb_destruir(abb_t *abb);
 
-/**
- * Destruye el ABB y libera toda la memoria asignada, aplicando la función destructor a cada elemento.
- * 
- * Si el destructor es NULL, no se aplica ninguna función a los elementos.
- */
 void abb_destruir_todo(abb_t *abb, void (*destructor)(void *));
 
 #endif // ABB_H_

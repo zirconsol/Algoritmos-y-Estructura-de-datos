@@ -22,7 +22,7 @@ abb_t *abb_crear(int (*cmp)(const void *, const void *))
 
 bool abb_insertar(abb_t *abb, const void *elemento)
 {
-	if (abb == NULL || abb->comparador == NULL)
+	if (abb == NULL || abb->comparador == NULL || elemento == NULL)
 		return false;
 
 	bool insertado = false;
@@ -31,14 +31,14 @@ bool abb_insertar(abb_t *abb, const void *elemento)
 					  abb->comparador, &insertado);
 
 	if (insertado)
-		abb->nodos++;
+		abb->cantidad++;
 
 	return insertado;
 }
 
 bool abb_existe(const abb_t *abb, const void *elemento)
 {
-	return false;
+	return abb_buscar(abb, elemento) != NULL;
 }
 
 void *abb_buscar(const abb_t *abb, const void *elemento)
@@ -59,13 +59,50 @@ void *abb_raiz(abb_t *abb)
 	return abb->raiz;
 }
 
+void *abb_eliminar(abb_t *abb, const void *elemento)
+{
+	if (!abb || !abb->raiz) {
+		return NULL;
+	}
+
+	nodo_t *padre = NULL;
+	nodo_t *actual = abb->raiz;
+	int cmp = 0;
+
+	while (actual != NULL &&
+	       (cmp = abb->comparador(elemento, actual->dato) != 0)) {
+		padre = actual;
+
+		if (cmp < 0) {
+			actual = actual->izq;
+		} else {
+			actual = actual->der;
+		}
+	}
+
+	if (actual == NULL) {
+		return NULL;
+	}
+
+	void *dato_eliminado = actual->dato;
+
+	if (!actual->izq && !actual->der)
+		eliminar_nodo_hoja(abb, actual, padre);
+	else if (!actual->izq || !actual->der)
+		eliminar_nodo_con_un_hijo(abb, actual, padre);
+	else
+		eliminar_nodo_con_dos_hijos(abb, actual, padre);
+
+	return dato_eliminado;
+}
+
 size_t abb_cantidad(const abb_t *abb)
 {
 	if (!abb) {
 		return 0;
 	}
 
-	return abb->nodos;
+	return abb->cantidad;
 }
 
 bool abb_vacio(const abb_t *abb)
@@ -77,25 +114,30 @@ bool abb_vacio(const abb_t *abb)
 	return abb->raiz == NULL;
 }
 
-void abb_recorrer(const struct abb_t *abb, enum abb_recorrido orden,
-		  void (*f)(void *, void *), void *extra)
+size_t abb_con_cada_elemento(const abb_t *abb, enum abb_recorrido modo,
+			     bool (*f)(void *, void *), void *extra)
 {
 	if (abb == NULL || f == NULL)
-		return;
+		return 0;
 
-	switch (orden) {
+	size_t visitados = 0;
+
+	switch (modo) {
 	case ABB_INORDEN:
-		abb_inorden_rec(abb->raiz, f, extra);
+		visitados = abb_inorden_rec(abb->raiz, f, extra);
 		break;
 	case ABB_PREORDEN:
-		abb_preorden_rec(abb->raiz, f, extra);
+		visitados = abb_preorden_rec(abb->raiz, f, extra);
 		break;
 	case ABB_POSTORDEN:
-		abb_postorden_rec(abb->raiz, f, extra);
+		visitados = abb_postorden_rec(abb->raiz, f, extra);
 		break;
 	default:
+		visitados = 0;
 		break;
 	}
+
+	return visitados;
 }
 
 void abb_destruir(abb_t *abb)

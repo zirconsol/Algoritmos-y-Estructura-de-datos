@@ -64,7 +64,7 @@ void insertar_elemento_en_abb_devuelve_abb_no_vacio(void)
 
 	pa2m_afirmar(abb_vacio(arbol) == false, "El arbol ya no esta vacio");
 
-	pa2m_afirmar(abb_cantidad(arbol) == 1, "El arbol tiene 1 elemento");
+	pa2m_afirmar(abb_cantidad(arbol) == 1, "El arbol tiene 1 elemento\n");
 
 	abb_destruir(arbol);
 }
@@ -84,20 +84,37 @@ void insertar_varios_elementos_cuenta_correctamente(void)
 	pa2m_afirmar(abb_insertar(arbol, &primer_elemento),
 		     "Se inserto el elemento en el arbol");
 
+	pa2m_afirmar(abb_existe(arbol, &primer_elemento),
+		     "El numero 3 existe en el arbol");
+
 	pa2m_afirmar(abb_cantidad(arbol) == 1, "El arbol tiene 1 elemento");
 
 	pa2m_afirmar(abb_insertar(arbol, &segundo_elemento),
 		     "Se inserto el elemento en el arbol");
+
+	pa2m_afirmar(abb_existe(arbol, &segundo_elemento),
+		     "El numero 1 existe en el arbol");
 
 	pa2m_afirmar(abb_cantidad(arbol) == 2, "El arbol tiene 2 elementos");
 
 	pa2m_afirmar(abb_insertar(arbol, &tercer_elemento),
 		     "Se inserto el elemento en el arbol");
 
+	pa2m_afirmar(abb_existe(arbol, &tercer_elemento),
+		     "El numero 5 existe en el arbol");
+
 	pa2m_afirmar(abb_cantidad(arbol) == 3, "El arbol tiene 3 elementos");
 
 	pa2m_afirmar(abb_insertar(arbol, &cuarto_elemento),
 		     "Se inserto el elemento en el arbol");
+
+	pa2m_afirmar(abb_existe(arbol, &primer_elemento),
+		     "El numero 7 existe en el arbol");
+
+	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
+
+	pa2m_afirmar(!abb_insertar(arbol, NULL),
+		     "No se puede insertar un elemento NULL");
 
 	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
 

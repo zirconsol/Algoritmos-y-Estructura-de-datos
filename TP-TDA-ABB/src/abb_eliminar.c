@@ -40,4 +40,29 @@ void eliminar_nodo_con_un_hijo(abb_t *abb, nodo_t *nodo, nodo_t *padre)
 	liberar_nodo(abb, nodo);
 }
 
-void eliminar_nodo_con_dos_hijos(abb_t *abb, nodo_t *nodo, nodo_t *padre);
+nodo_t *buscar_minimo(nodo_t *nodo, nodo_t **padre)
+{
+	if (!nodo)
+		return NULL;
+
+	while (nodo->izq) {
+		if (padre)
+			*padre = nodo;
+		nodo = nodo->izq;
+	}
+	return nodo;
+}
+
+void eliminar_nodo_con_dos_hijos(abb_t *abb, nodo_t *nodo, nodo_t *padre)
+{
+	(void)padre;
+	nodo_t *padre_sucesor = nodo;
+	nodo_t *sucesor = buscar_minimo(nodo->der, &padre_sucesor);
+	nodo->dato = sucesor->dato;
+
+	if (!sucesor->izq && !sucesor->der) {
+		eliminar_nodo_hoja(abb, sucesor, padre_sucesor);
+	} else {
+		eliminar_nodo_con_un_hijo(abb, sucesor, padre_sucesor);
+	}
+}

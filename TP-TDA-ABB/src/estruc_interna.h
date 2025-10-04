@@ -1,7 +1,11 @@
-#ifndef ESTRUC_INTERNA_H_
-#define ESTRUC_INTERNA_H_
+#ifndef ABB_ESTRUCTURA_PRIVADA_H_
+#define ABB_ESTRUCTURA_PRIVADA_H_
 
-#include <stdio.h>
+#include <stdlib.h>
+
+//ESTE ARCHIVO NO ES PARA EL USUARIO
+//
+//NO TE QUIERO VER INCLUYENDO ESTO EN TU PROGRAMA
 
 typedef struct nodo {
 	void *dato;
@@ -9,10 +13,10 @@ typedef struct nodo {
 	struct nodo *der;
 } nodo_t;
 
-struct abb_t {
-	size_t nodos;
+struct abb {
+	size_t cantidad;
 	nodo_t *raiz;
 	int (*comparador)(const void *, const void *);
 };
 
-#endif
+#endif // ABB_ESTRUCTURA_PRIVADA_H_
