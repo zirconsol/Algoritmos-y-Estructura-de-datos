@@ -20,14 +20,14 @@ abb_t *abb_crear(int (*cmp)(const void *, const void *))
 	return arbol;
 }
 
-bool abb_insertar(abb_t *abb, const void *elemento)
+bool abb_insertar(abb_t *abb, void *dato)
 {
-	if (abb == NULL || abb->comparador == NULL || elemento == NULL)
+	if (abb == NULL || abb->comparador == NULL || dato == NULL)
 		return false;
 
 	bool insertado = false;
 
-	abb->raiz = abb_insertar_nodo_rec(abb->raiz, (void *)elemento,
+	abb->raiz = abb_insertar_nodo_rec(abb->raiz, (void *)dato,
 					  abb->comparador, &insertado);
 
 	if (insertado)
@@ -36,16 +36,15 @@ bool abb_insertar(abb_t *abb, const void *elemento)
 	return insertado;
 }
 
-bool abb_existe(const abb_t *abb, const void *elemento)
+bool abb_existe(abb_t *abb, void *dato)
 {
-	return abb_buscar(abb, elemento) != NULL;
+	return abb_buscar(abb, dato) != NULL;
 }
 
-void *abb_buscar(const abb_t *abb, const void *elemento)
+void *abb_buscar(abb_t *abb, void *dato)
 {
 	if (abb != NULL && abb->comparador != NULL) {
-		return abb_buscar_nodo_rec(abb->raiz, elemento,
-					   abb->comparador);
+		return abb_buscar_nodo_rec(abb->raiz, dato, abb->comparador);
 	}
 	return NULL;
 }
@@ -59,7 +58,7 @@ void *abb_raiz(abb_t *abb)
 	return abb->raiz;
 }
 
-void *abb_eliminar(abb_t *abb, const void *elemento)
+void *abb_eliminar(abb_t *abb, void *dato)
 {
 	if (!abb || !abb->raiz) {
 		return NULL;
@@ -70,7 +69,7 @@ void *abb_eliminar(abb_t *abb, const void *elemento)
 	int cmp = 0;
 
 	while (actual != NULL &&
-	       (cmp = abb->comparador(elemento, actual->dato) != 0)) {
+	       (cmp = abb->comparador(dato, actual->dato) != 0)) {
 		padre = actual;
 
 		if (cmp < 0) {
@@ -96,7 +95,7 @@ void *abb_eliminar(abb_t *abb, const void *elemento)
 	return dato_eliminado;
 }
 
-size_t abb_cantidad(const abb_t *abb)
+size_t abb_cantidad(abb_t *abb)
 {
 	if (!abb) {
 		return 0;
@@ -105,7 +104,7 @@ size_t abb_cantidad(const abb_t *abb)
 	return abb->cantidad;
 }
 
-bool abb_vacio(const abb_t *abb)
+bool abb_esta_vacio(abb_t *abb)
 {
 	if (!abb) {
 		return true;
@@ -114,7 +113,7 @@ bool abb_vacio(const abb_t *abb)
 	return abb->raiz == NULL;
 }
 
-size_t abb_con_cada_elemento(const abb_t *abb, enum abb_recorrido modo,
+size_t abb_con_cada_elemento(abb_t *abb, enum abb_recorrido modo,
 			     bool (*f)(void *, void *), void *extra)
 {
 	if (abb == NULL || f == NULL)
