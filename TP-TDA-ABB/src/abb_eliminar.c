@@ -18,7 +18,7 @@ void reconectar_arbol(abb_t *abb, nodo_t *padre, nodo_t *nodo_viejo,
 void liberar_nodo(abb_t *abb, nodo_t *nodo)
 {
 	free(nodo);
-	abb->nodos--;
+	abb->cantidad--;
 }
 
 void eliminar_nodo_hoja(abb_t *abb, nodo_t *nodo, nodo_t *padre)

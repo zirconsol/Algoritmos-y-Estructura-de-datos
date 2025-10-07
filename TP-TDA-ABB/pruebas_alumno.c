@@ -204,6 +204,105 @@ void chequear_raiz_al_insertar_varios_elementos(void)
 	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
 	abb_destruir(arbol);
 }
+//////
+
+//////
+
+void eliminar_un_nodo_hoja_del_abb(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+
+	int vector[] = { 4, 2, 6 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(arbol, &vector[i]);
+
+	pa2m_afirmar(abb_cantidad(arbol) == 3, "El arbol tiene 3 elementos");
+
+	pa2m_afirmar(abb_eliminar(arbol, &vector[2]) == &vector[2],
+		     "Se elimino correctamente el numero 6");
+	pa2m_afirmar(!abb_existe(arbol, &vector[2]),
+		     "El numero 6 no existe en el arbol");
+	pa2m_afirmar(abb_cantidad(arbol) == 2, "El arbol tiene 2 elementos");
+
+	pa2m_afirmar(abb_existe(arbol, &vector[0]),
+		     "El numero 4 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[1]),
+		     "El numero 2 esta en el arbol");
+}
+
+void eliminar_un_nodo_con_un_hijo_del_abb(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+
+	int vector[] = { 4, 2, 6, 1 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(arbol, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+
+	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
+
+	pa2m_afirmar(abb_eliminar(arbol, &vector[1]) == &vector[1],
+		     "Se elimino correctamente el numero 2");
+
+	abb_con_cada_elemento(arbol, ABB_PREORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "4 1 6") == 0, "Preorden correcto");
+
+	pa2m_afirmar(abb_existe(arbol, &vector[0]),
+		     "El numero 4 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[2]),
+		     "El numero 1 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[3]),
+		     "El numero 6 esta en el arbol");
+
+	pa2m_afirmar(abb_cantidad(arbol) == 3, "El arbol tiene 3 elementos");
+}
+
+void eliminar_un_nodo_con_dos_hijos_del_abb(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(arbol, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+
+	pa2m_afirmar(abb_cantidad(arbol) == 7, "El arbol tiene 7 elementos");
+
+	pa2m_afirmar(abb_eliminar(arbol, &vector[2]) == &vector[2],
+		     "Se elimino correctamente el numero 6");
+
+	abb_con_cada_elemento(arbol, ABB_PREORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "4 2 1 3 7 5") == 0, "Preorden correcto");
+
+	pa2m_afirmar(abb_existe(arbol, &vector[0]),
+		     "El numero 4 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[1]),
+		     "El numero 2 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[3]),
+		     "El numero 1 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[4]),
+		     "El numero 3 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[5]),
+		     "El numero 5 esta en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &vector[6]),
+		     "El numero 7 esta en el arbol");
+
+	pa2m_afirmar(abb_cantidad(arbol) == 6, "El arbol tiene 6 elementos");
+}
 
 void abb_existe_con_inexistente_devuelve_false(void)
 {
@@ -233,34 +332,6 @@ void buscar_elemento_del_arbol_lo_devuelve(void)
 	abb_insertar(arbol, &elemento);
 	pa2m_afirmar(abb_buscar(arbol, &elemento) != NULL,
 		     "El elemento fue encontrado en el arbol");
-}
-
-void prueba_recorridos(void)
-{
-	abb_t *abb = abb_crear(cmp_int); // tu comparador
-
-	int a = 4, b = 2, c = 6, d = 1, e = 3, f = 5, g = 7;
-	abb_insertar(abb, &a);
-	abb_insertar(abb, &b);
-	abb_insertar(abb, &c);
-	abb_insertar(abb, &d);
-	abb_insertar(abb, &e);
-	abb_insertar(abb, &f);
-	abb_insertar(abb, &g);
-
-	printf("Recorrido inorden: ");
-	abb_con_cada_elemento(abb, ABB_INORDEN, imprimir_elemento, NULL);
-	printf("\n");
-
-	printf("Recorrido preorden: ");
-	abb_con_cada_elemento(abb, ABB_PREORDEN, imprimir_elemento, NULL);
-	printf("\n");
-
-	printf("Recorrido postorden: ");
-	abb_con_cada_elemento(abb, ABB_POSTORDEN, imprimir_elemento, NULL);
-	printf("\n");
-
-	abb_destruir(abb);
 }
 
 void prueba_recorridos_in_orden_con_string(void)
@@ -392,6 +463,11 @@ int main(void)
 	insertar_null_no_inserta_en_arbol();
 	insertar_varios_elementos_correctamente();
 	chequear_raiz_al_insertar_varios_elementos();
+
+	pa2m_nuevo_grupo("Pruebas de eliminacion de elementos de un arbol");
+	eliminar_un_nodo_hoja_del_abb();
+	eliminar_un_nodo_con_un_hijo_del_abb();
+	eliminar_un_nodo_con_dos_hijos_del_abb();
 
 	pa2m_nuevo_grupo("Pruebas de busqueda de elementos en arbol");
 	abb_existe_con_inexistente_devuelve_false();

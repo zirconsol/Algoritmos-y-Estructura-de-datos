@@ -68,8 +68,7 @@ void *abb_eliminar(abb_t *abb, void *dato)
 	nodo_t *actual = abb->raiz;
 	int cmp = 0;
 
-	while (actual != NULL &&
-	       (cmp = abb->comparador(dato, actual->dato) != 0)) {
+	while (actual && (cmp = abb->comparador(dato, actual->dato)) != 0) {
 		padre = actual;
 
 		if (cmp < 0) {
