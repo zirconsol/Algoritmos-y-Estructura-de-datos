@@ -3,7 +3,37 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stddef.h>
 #include "src/abb.h"
+
+struct recolector {
+	char *buf;
+	size_t cap;
+	size_t len;
+};
+
+bool imprimir_elemento(void *dato, void *extra)
+{
+	(void)extra;
+	printf("%d ", *(int *)dato);
+	return true;
+}
+
+bool concatenar_ints_en_string(void *dato, void *extra)
+{
+	struct recolector *recolector = extra;
+	int v = *(int *)dato;
+	int escritos = snprintf(recolector->buf + recolector->len,
+				recolector->cap - recolector->len,
+				(recolector->len == 0) ? "%d" : " %d", v);
+
+	if (escritos < 0)
+		return false;
+	if ((size_t)escritos >= recolector->cap - recolector->len)
+		return false;
+	recolector->len += (size_t)escritos;
+	return true;
+}
 
 static int cmp_int(const void *primer_elemento, const void *segundo_elemento)
 {
@@ -133,9 +163,219 @@ void insertar_varios_elementos_correctamente(void)
 	pa2m_afirmar(abb_existe(arbol, &primer_elemento),
 		     "El numero 7 existe en el arbol");
 
-	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
+	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos\n");
 
 	abb_destruir(arbol);
+}
+
+void chequear_raiz_al_insertar_varios_elementos(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+
+	int primer_elemento = 3;
+
+	int segundo_elemento = 1;
+
+	int tercer_elemento = 5;
+
+	int cuarto_elemento = 7;
+
+	abb_insertar(arbol, &primer_elemento);
+	pa2m_afirmar(abb_raiz(arbol) == &primer_elemento,
+		     "La raiz del arbol es el numero 3");
+	pa2m_afirmar(abb_insertar(arbol, &segundo_elemento),
+		     "Se inserto el elemento en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &segundo_elemento),
+		     "El numero 1 existe en el arbol");
+	pa2m_afirmar(abb_raiz(arbol) == &primer_elemento,
+		     "La raiz del arbol es el numero 3");
+	pa2m_afirmar(abb_cantidad(arbol) == 2, "El arbol tiene 2 elementos");
+	pa2m_afirmar(abb_insertar(arbol, &tercer_elemento),
+		     "Se inserto el elemento en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &tercer_elemento),
+		     "El numero 5 existe en el arbol");
+	pa2m_afirmar(abb_raiz(arbol) == &primer_elemento,
+		     "La raiz del arbol es el numero 3");
+	pa2m_afirmar(abb_cantidad(arbol) == 3, "El arbol tiene 3 elementos");
+	pa2m_afirmar(abb_insertar(arbol, &cuarto_elemento),
+		     "Se inserto el elemento en el arbol");
+	pa2m_afirmar(abb_existe(arbol, &primer_elemento),
+		     "El numero 7 existe en el arbol");
+	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
+	abb_destruir(arbol);
+}
+
+void abb_existe_con_inexistente_devuelve_false(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+	int elemento_sin_insertar = 10;
+	int primer_elemento = 3;
+	pa2m_afirmar(abb_insertar(arbol, &primer_elemento),
+		     "Se inserto el elemento en el arbol");
+
+	pa2m_afirmar(!abb_existe(arbol, &elemento_sin_insertar),
+		     "El elemento no existe en el arbol");
+}
+
+void buscar_con_inexistente_devuelve_null(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+	int elemento_sin_insertar = 10;
+
+	pa2m_afirmar(abb_buscar(arbol, &elemento_sin_insertar) == NULL,
+		     "El elemento no se encontro al buscar");
+}
+
+void buscar_elemento_del_arbol_lo_devuelve(void)
+{
+	abb_t *arbol = abb_crear(cmp_int);
+	int elemento = 10;
+	abb_insertar(arbol, &elemento);
+	pa2m_afirmar(abb_buscar(arbol, &elemento) != NULL,
+		     "El elemento fue encontrado en el arbol");
+}
+
+void prueba_recorridos(void)
+{
+	abb_t *abb = abb_crear(cmp_int); // tu comparador
+
+	int a = 4, b = 2, c = 6, d = 1, e = 3, f = 5, g = 7;
+	abb_insertar(abb, &a);
+	abb_insertar(abb, &b);
+	abb_insertar(abb, &c);
+	abb_insertar(abb, &d);
+	abb_insertar(abb, &e);
+	abb_insertar(abb, &f);
+	abb_insertar(abb, &g);
+
+	printf("Recorrido inorden: ");
+	abb_con_cada_elemento(abb, ABB_INORDEN, imprimir_elemento, NULL);
+	printf("\n");
+
+	printf("Recorrido preorden: ");
+	abb_con_cada_elemento(abb, ABB_PREORDEN, imprimir_elemento, NULL);
+	printf("\n");
+
+	printf("Recorrido postorden: ");
+	abb_con_cada_elemento(abb, ABB_POSTORDEN, imprimir_elemento, NULL);
+	printf("\n");
+
+	abb_destruir(abb);
+}
+
+void prueba_recorridos_in_orden_con_string(void)
+{
+	abb_t *abb = abb_crear(cmp_int);
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(abb, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+	abb_con_cada_elemento(abb, ABB_INORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "1 2 3 4 5 6 7") == 0, "Inorden correcto");
+}
+void abb_desordenado_comparado_con_inorden_da_falso(void)
+{
+	abb_t *abb = abb_crear(cmp_int);
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(abb, &vector[i]);
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+	abb_con_cada_elemento(abb, ABB_PREORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "1 2 3 4 5 6 7") != 0,
+		     "El array no esta inorden");
+}
+
+void prueba_recorridos_pre_orden_con_string(void)
+{
+	abb_t *abb = abb_crear(cmp_int);
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(abb, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+	abb_con_cada_elemento(abb, ABB_PREORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "4 2 1 3 6 5 7") == 0, "Preorden correcto");
+}
+
+void prueba_recorridos_post_orden_con_string(void)
+{
+	abb_t *abb = abb_crear(cmp_int);
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(abb, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+	abb_con_cada_elemento(abb, ABB_POSTORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "1 3 2 5 7 6 4") == 0, "Postorden correcto");
+
+	abb_destruir(abb);
+}
+
+void abb_desordenado_comparado_con_postorden_da_falso(void)
+{
+	abb_t *abb = abb_crear(cmp_int);
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(abb, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+	abb_con_cada_elemento(abb, ABB_INORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "1 3 2 5 7 6 4") != 0,
+		     "El array no esta en postorden");
+
+	abb_destruir(abb);
+}
+
+void abb_desordenado_comparado_con_preorden_da_falso(void)
+{
+	abb_t *abb = abb_crear(cmp_int);
+	int vector[] = { 4, 2, 6, 1, 3, 5, 7 };
+	for (size_t i = 0; i < sizeof vector / sizeof vector[0]; i++)
+		abb_insertar(abb, &vector[i]);
+
+	char buf[128];
+	struct recolector recolector = { .buf = buf,
+					 .cap = sizeof buf,
+					 .len = 0 };
+
+	recolector.len = 0;
+	abb_con_cada_elemento(abb, ABB_INORDEN, concatenar_ints_en_string,
+			      &recolector);
+	pa2m_afirmar(strcmp(buf, "4 2 1 3 6 5 7") != 0,
+		     "El array no esta en preorden");
+
+	abb_destruir(abb);
 }
 
 int main(void)
@@ -151,6 +391,20 @@ int main(void)
 	insertar_elemento_en_abb_devuelve_abb_no_vacio();
 	insertar_null_no_inserta_en_arbol();
 	insertar_varios_elementos_correctamente();
+	chequear_raiz_al_insertar_varios_elementos();
+
+	pa2m_nuevo_grupo("Pruebas de busqueda de elementos en arbol");
+	abb_existe_con_inexistente_devuelve_false();
+	buscar_con_inexistente_devuelve_null();
+	buscar_elemento_del_arbol_lo_devuelve();
+
+	pa2m_nuevo_grupo("Pruebas de busqueda de elementos en arbol");
+	prueba_recorridos_in_orden_con_string();
+	prueba_recorridos_pre_orden_con_string();
+	prueba_recorridos_post_orden_con_string();
+	abb_desordenado_comparado_con_inorden_da_falso();
+	abb_desordenado_comparado_con_postorden_da_falso();
+	abb_desordenado_comparado_con_preorden_da_falso();
 
 	return pa2m_mostrar_reporte();
 }

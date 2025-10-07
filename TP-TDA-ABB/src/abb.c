@@ -55,7 +55,7 @@ void *abb_raiz(abb_t *abb)
 		return NULL;
 	}
 
-	return abb->raiz;
+	return abb->raiz->dato;
 }
 
 void *abb_eliminar(abb_t *abb, void *dato)
