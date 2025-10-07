@@ -138,6 +138,12 @@ size_t abb_con_cada_elemento(abb_t *abb, enum abb_recorrido modo,
 	return visitados;
 }
 
+size_t abb_vectorizar(abb_t *abb, enum abb_recorrido tipo_recorrido,
+		      size_t cant, void **vector)
+{
+	return 0;
+}
+
 void abb_destruir(abb_t *abb)
 {
 	if (!abb) {

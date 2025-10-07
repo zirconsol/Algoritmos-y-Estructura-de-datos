@@ -204,9 +204,6 @@ void chequear_raiz_al_insertar_varios_elementos(void)
 	pa2m_afirmar(abb_cantidad(arbol) == 4, "El arbol tiene 4 elementos");
 	abb_destruir(arbol);
 }
-//////
-
-//////
 
 void eliminar_un_nodo_hoja_del_abb(void)
 {
