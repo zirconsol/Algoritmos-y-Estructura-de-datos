@@ -1,7 +1,6 @@
 #include "abb.h"
 #include "estruc_interna.h"
-#include "abb_eliminar.c"
-#include "abb_aux_rec.c"
+#include "abb_aux_rec.h"
 
 abb_t *abb_crear(int (*cmp)(const void *, const void *))
 {
@@ -22,7 +21,7 @@ abb_t *abb_crear(int (*cmp)(const void *, const void *))
 
 bool abb_insertar(abb_t *abb, void *dato)
 {
-	if (abb == NULL || abb->comparador == NULL || dato == NULL)
+	if (abb == NULL || abb->comparador == NULL)
 		return false;
 
 	bool insertado = false;
@@ -115,33 +114,35 @@ bool abb_esta_vacio(abb_t *abb)
 size_t abb_con_cada_elemento(abb_t *abb, enum abb_recorrido modo,
 			     bool (*f)(void *, void *), void *extra)
 {
-	if (abb == NULL || f == NULL)
+	if (!abb || !f)
 		return 0;
-
-	size_t visitados = 0;
 
 	switch (modo) {
 	case ABB_INORDEN:
-		visitados = abb_inorden_rec(abb->raiz, f, extra);
-		break;
+		return abb_inorden_rec(abb->raiz, f, extra);
 	case ABB_PREORDEN:
-		visitados = abb_preorden_rec(abb->raiz, f, extra);
-		break;
+		return abb_preorden_rec(abb->raiz, f, extra);
 	case ABB_POSTORDEN:
-		visitados = abb_postorden_rec(abb->raiz, f, extra);
-		break;
+		return abb_postorden_rec(abb->raiz, f, extra);
 	default:
-		visitados = 0;
-		break;
+		return 0;
 	}
-
-	return visitados;
 }
 
 size_t abb_vectorizar(abb_t *abb, enum abb_recorrido tipo_recorrido,
 		      size_t cant, void **vector)
 {
-	return 0;
+	if (!abb || !vector || cant == 0) {
+		return 0;
+	}
+	struct vector_contenedor vec_recibido = { .destino = vector,
+						  .cap = cant,
+						  .insertados = 0 };
+
+	(void)abb_con_cada_elemento(abb, tipo_recorrido,
+				    insertar_dato_en_vector, &vec_recibido);
+
+	return vec_recibido.insertados;
 }
 
 void abb_destruir(abb_t *abb)
@@ -152,4 +153,13 @@ void abb_destruir(abb_t *abb)
 	destruir_nodo_rec(abb->raiz, NULL);
 	free(abb);
 	abb = NULL;
+}
+
+void abb_destruir_todo(abb_t *abb, void (*destruir)(void *))
+{
+	if (!abb) {
+		return;
+	}
+	destruir_nodo_rec(abb->raiz, destruir);
+	free(abb);
 }
