@@ -2,7 +2,7 @@
 <img width="32px" src="img/algo2.svg">
 </div>
 
-# TDA LISTA - PILA - COLA
+# TDA ABB
 
 ## Alumno: Juan Pablo Romano - 96.508 - jpromano@fi.uba.ar
 
@@ -29,24 +29,31 @@ valgrind --track-origins=yes --leak-check=full \
 
 #  Funcionamiento
 
-Para el TP de TDAs, se realizaron varias estructuras que garantizaban el correcto funcionamiento e implementación de los tipos de datos abstractos estudiados, para este caso, la **lista simplemente enlazada**, la **pila** y la **cola**, cada uno con su propio archivo fuente `lista.c`, `pila.c`, `cola.c` y su respectivo header `lista.h`, `cola.h`, `pila.h`.
+Para el TP de TDA ABB, se realizaron varias estructuras que garantizan el correcto funcionamiento e implementación de un **arbol binario de busqueda**, para el cual se realizo una implementacion principal `abb.c`, con su respectivo header `abb.h`. Ademas, para modularizar el codigo y separar las primitivas disponibles para el usuario, se implemento un modulo `abb_aux_rec.c` con su respectivo header `abb_aux_rec.h`, que contiene distintas implementaciones tanto de funciones recursivas, como auxiliares para la correcta implementacion de las primitivas principales.
 
-## lista.c
-La implementación de la lista elegida fue la **lista simplemente enlazada** en `lista.c`. Para trabajar con los nodos, incorporé un `struct nodo` que contiene un puntero `void` `dato`, y un puntero al nodo `struct nodo *siguiente`. Por otra parte, también definí el `struct` de lista con dos punteros a los nodos `primero` y `último`, además de la cantidad de nodos que almacena la lista en `cantidad`.
-
-Por último, también definí una estructura `lista_iterador` con dos punteros, uno a la lista `lista` y otro al nodo `actual`, ya que el iterador lo vamos a usar para recorrer la totalidad de la lista con un bucle `for`.
-
-## pila.c
-La implementación de la pila la hice usando las primitivas de lista adaptadas a los requerimientos que debe tener una pila, correspondientes al principio **LIFO**, y para ello se utilizaron las funciones `lista_insertar`, `lista_eliminar_elemento` y `lista_buscar_elemento`, adaptadas en cada caso acorde a las necesidades del principio.
-
-## cola.c
-Por otra parte, y al igual que con la pila, la implementación de la cola la hice reutilizando las primitivas de la lista, pero en este caso, adaptándolas a los requerimientos que tiene una cola, siguiendo el principio **FIFO**, y para ello se utilizaron las funciones de lista `lista_agregar`, `lista_eliminar_elemento` y `lista_buscar_elemento`, adaptadas a las necesidades del principio.
+## abb.c
+Para poder implementar correctamente el abb, trabaje con una `estruc_interna.h` predefinida que determina la estructura propia del abb. Para trabajar con los nodos, se utilizaria `struct nodo` que contiene un puntero `void` `dato`, y un puntero al nodo `struct nodo *izq` y `struct nodo *der` correspondientes a las dos posibles ramas de un nodo en un ABB.
+Por otra parte, también se definio el `struct` del abb con dos punteros, un puntero a `nodo_t`, que apuntaria a la raiz del abb, y el otro, un puntero int a un `comparador`, que servira para recorrer el arbol.
 
 
 ***
-### <ins>Primitivas de LISTA
-#### lista_t *lista_crear(void)
-Función encargada de la creación de la lista. Utiliza `malloc` para reservar memoria para una `lista_t` y un puntero para almacenar la dirección en memoria de la misma. Si la lista fuese **NULL** o inválida, retorna **NULL**. Si estamos ante el caso de que la lista es válida, crea la lista y apunta los punteros `primero` y `último` a **NULL**.  
+### <ins>Primitivas de ABB
+#### abb_t *abb_crear(int (*cmp)(const void *, const void *))
+Función encargada de la creación del arbol. Recibe como parametro un comparador para el arbol.
+
+Revisa si el comparador es valido, para luego, con `calloc`, reservar la memoria para la estructura.
+Luego, asigna el comparador que se ingreso como parametro al comparador del arbol.
+```
+if (!cmp) {
+  return **NULL**;
+}
+abb_t *arbol = calloc(1, sizeof(abb_t));
+```
+
+Al finalizar, devuelve el arbol ya creado.
+```
+return arbol;
+```
 
 Como solo inicializa la estructura sin recorrer nada, tiene una complejidad **O(1)**.
 
@@ -57,16 +64,38 @@ Como solo inicializa la estructura sin recorrer nada, tiene una complejidad **O(
 </p>
 <br><br>
 
-#### bool lista_vacia(lista_t *lista);
-Esta función se encarga de verificar si una lista está vacía o no, chequeando si el puntero `primero` apunta a **NULL** o no. Esto lo definí así ya que, al ingresar el primer nodo a la lista, `primero` va a apuntar a ese nodo, y por ende, verificando su estado podemos ver rápidamente si la lista se encuentra vacía o no. En cuanto a su complejidad, como solamente devuelve un valor, tiene una complejidad de **O(1)**.
+#### bool abb_esta_vacio(abb_t *abb);
+Esta función se encarga de verificar si el arbol está vacío o no, chequeando si el puntero `raiz` apunta a ****NULL**** o no. Esto lo definí así ya que, al ingresar el primer nodo al arbol, `raiz` va a apuntar a ese nodo, y por ende, verificando su estado podemos ver rápidamente si el arbol tiene raiz,y por ende, si se encuentra vacío o no.
 
-#### size_t lista_cantidad(lista_t *lista);
-Esta función chequea el valor del contador `cantidad` dentro de la `lista_t`, que incrementa o decrementa al realizar operaciones de agregado o quitado de nodos. Al tratarse de una función que accede y devuelve el valor de un campo de la estructura, tiene una complejidad de **O(1)**.
+En cuanto a su complejidad, como solamente devuelve un valor, tiene una complejidad de **O(1)**.
 
-#### bool lista_agregar(lista_t *lista, void *dato);
-La función `lista_agregar` tiene como finalidad agregar nodos al final de la lista. Para ello, primero reserva memoria con `malloc` para el nuevo nodo, y apunta los punteros del `nuevo_nodo`: `dato` con la información que se almacena en el nodo, y `siguiente` a **NULL**, ya que el último nodo de una lista enlazada debe apuntar siempre a **NULL**. Luego enlazo los punteros `primero` y `último` con este `nuevo_nodo`, haciendo que ambos punteros lo apunten, para finalmente incrementar en 1 el contador `cantidad`.  
+#### size_t abb_cantidad(abb_t *abb);
+Esta función chequea si el arbol es valido, y luego devuelve el valor del contador `cantidad` dentro de `abb_t`, que incrementa o decrementa al realizar operaciones de agregado o quitado de nodos en el arbol. Al tratarse de una función que accede y devuelve el valor de un campo de la estructura, tiene una complejidad de **O(1)**.
 
-Debido a la estructura de nodos que elegí, con un puntero al último elemento, se evita recorrer la lista y, por ende, tiene una complejidad de **O(1)**.
+#### bool abb_insertar(abb_t *abb, void *dato)
+La función `abb_insertar` tiene como finalidad agregar nodos al arbol. Para ello, primero verifica si el arbol y el comparador son validos, para luego utilizar la funcion auxiliar `abb_insertar_nodo_rec`.
+ Esta funcion reserva memoria con `calloc` para el nuevo nodo, y apunta los punteros del `nodo` segun su `dato`, y sus punteros `izq` y `der` a ****NULL****.
+```
+ if (nodo == **NULL**) {
+	nodo_t *nuevo_nodo = calloc(1, sizeof(nodo_t));
+	if (nuevo_nodo != **NULL**) {
+		nuevo_nodo->dato = (void *)dato;
+		*insertado = true;
+	}
+	return nuevo_nodo;
+}
+  ```
+ 
+ Luego, realiza la comparacion de insercion, aqui, el problema tendra tres caminos, uno de ellos, que no haya elementos para comparar, con lo cual, el nodo se inserta en la raiz del arbol. Para ello, simplemente apunta `*raiz` del `abb_t` al `nodo` creado y se aumenta la `cantidad` en uno.
+```
+ abb->raiz = abb_insertar_nodo_rec(abb->raiz, (void *)dato, abb->comparador, &insertado);
+
+  if (insertado){
+    abb->cantidad++;
+  }
+```
+
+Para el caso de insertar en la raiz, estamos ante el mejor caso de complejidad, que tendria una complejidad de **O(1)**.
 
 <p align="center">
   <img src="https://i.postimg.cc/Hnwpq0jJ/Lista-agregar.png" alt="Lista agregar" width="800"/>
@@ -75,55 +104,79 @@ Debido a la estructura de nodos que elegí, con un puntero al último elemento, 
 </p>
 <br><br>
 
-#### bool lista_insertar(lista_t *lista, void *elemento, size_t posición);
-Para la función `lista_insertar` trabajé con tres posibles escenarios. Como primer caso, si se quería insertar en la primera posición de la lista, un segundo caso para insertar en la última posición de la lista, y un tercer caso intermedio para cualquier otra posición de la lista.
+Los otros dos caminos a la hora de insertar, son si el dato del nodo a insertar es mayor o menor al dato que ya esta en la raiz, o bien, en el nodo padre.
 
-Para el caso en que se quisiera agregar el elemento al principio de la lista, el programa comienza creando el `nuevo_nodo`, de manera similar a como se hizo en `lista_agregar`. Luego, lo re-enlaza en la lista haciendo que el puntero `primero` de la lista apunte a este `nuevo_nodo`, y que el puntero `siguiente` dentro de `nuevo_nodo` apunte al nodo que, hasta la creación del `nuevo_nodo`, ocupaba la posición de primer nodo.
+Para simplificar, utilice una llamada recursiva para asi analizar un nodo con potenciales izquierda y derecha, y de esa manera, si tuviera que bajar un nivel, simplemente vuelve a llamarse a si misma y continua comparando hasta lograr insertar.
 
-<p align="center">
-  <img src="https://i.postimg.cc/Hkv9cR97/Lista-insertar.png" alt="Lista insertar" width="800"/>
-  <br>
-  <em>Caso de inserción en primera posición.</em>
-</p>
-<br><br>
+Para el caso en que el nodo a insertar es mayor que su nodo padre, posterior a reservarle la memoria al nodo con `calloc`, se intenta insertar a la derecha del padre.
 
-Luego tenemos el caso intermedio, es decir, cuando se desea insertar un nodo entre dos nodos existentes. Al igual que en la inserción en posición cero, primero se reserva la memoria para el `nuevo_nodo`, para luego insertarlo.
+Para esto, dentro de la funcion `abb_insertar_nodo_rec` utiliza el comparador, chequea si es posible insertar en esa posicion, si no se puede insertar, hace una llamada recursiva con el nodo hijo y repite hasta encontrar un lugar donde insertar, para luego apuntar el punter `*der` del nodo padre correspondiente al hijo a insertar.
 
-Para ello, lo primero que hace la función es definir un puntero `actual` que recorre los nodos hasta hallar el nodo anterior al lugar donde se desea insertar el `nuevo_nodo`, y lo apunta con `actual`. Una vez hecho esto, el `nuevo_nodo` se enlaza con la lista haciendo que su puntero `siguiente` apunte al nodo posterior al señalado como `actual`. De esta manera, queda correctamente enlazado al resto de la lista. Finalmente, se actualiza el puntero `siguiente` dentro del nodo apuntado por `actual` para que apunte al nuevo nodo insertado, y se incrementa la `cantidad` en 1.
+Al igual que para insertar a la derecha, para insertar un nodo con dato menor al del padre, el programa realiza la misma tarea, pero en lugar de usar el puntero `*der` del nodo, utiliza el puntero `*izq` correspondiente al lado izquierdo para asi insertar menores o iguales a la izquierda del padre.
 
-<p align="center">
-  <img src="https://i.postimg.cc/K8pDkwDK/Lista-insertar-intermedio.png" alt="Lista insertar" width="800"/>
-  <br>
-  <em>Caso de inserción en posición intermedia.</em>
-</p>
-<br><br>
-
-
-Por último, está el caso en que se quisiera insertar un nodo al final de la lista.
-
-Para ello, el programa inicia reservando memoria, como en los dos casos previos, para el `nuevo_nodo`. Luego, utiliza el puntero `último` de la lista para tomarlo como nuevo nodo final, y enlaza el nodo que, hasta ese momento, era el último, haciendo que su puntero `siguiente` pase de apuntar a **NULL** al `nuevo_nodo`.
+Para el caso de insertar a izquierda o derecha, la complejidad se torna **O(n)** como peor caso, mejorando a **O(log(n)**) si se trata de un arbol balanceado.
+```
+int cmp = comparador(dato, nodo->dato);
+  if (cmp <= 0)
+    nodo->izq = abb_insertar_nodo_rec(
+      nodo->izq, dato, comparador, insertado);
+  else
+    nodo->der = abb_insertar_nodo_rec(
+      nodo->der, dato, comparador, insertado);
+	}
+	return nodo;
+```
 
 <p align="center">
-  <img src="https://i.postimg.cc/x11PdnMb/Lista-insertar-final.png" alt="Lista insertar final" width="800"/>
+  <img src="https://i.postimg.cc/Hnwpq0jJ/Lista-agregar.png" alt="Lista agregar" width="800"/>
   <br>
-  <em>Caso de inserción en la ultima posición.</em>
+  <em>Diagrama de la función lista_agregar.</em>
 </p>
 <br><br>
+///
+<p align="center">
+  <img src="https://i.postimg.cc/Hnwpq0jJ/Lista-agregar.png" alt="Lista agregar" width="800"/>
+  <br>
+  <em>Diagrama de la función lista_agregar.</em>
+</p>
+<br><br>
+////
+///
+///
+//
+//
 
 
-En cuanto a la complejidad, varía en función de dónde se inserte. Debido a la estructura del nodo con punteros al primer y al último elemento, insertar tanto en la primera como en la última posición tiene una complejidad de **O(1)**, mientras que insertar en una posición intermedia tendrá una complejidad de **O(n)**, ya que dependerá de recorrer hasta el nodo en la posición anterior a la pedida.
 
-#### void *lista_eliminar_primer_elemento(lista_t *lista);
 
-La función `lista_eliminar_primer_elemento` fue diseñada para eliminar el nodo dentro de la lista que se encuentre en la primera posición.
+#### void *abb_eliminar(abb_t *abb, void *dato)
 
-Para ello, el programa define un puntero auxiliar `borrar_nodo` el cual apunta a este primer nodo a borrar.
+La función `abb_eliminar` recibe como parametros un puntero a la estructura arbol `abb`, un puntero al dato `dato`, y tiene como finalidad eliminar el nodo correspondiente al dato pasado como parametro.
 
-Luego, apunta el puntero `primero` de la lista al nodo posterior al nodo que se quiere eliminar, desenlazando así el nodo que queremos borrar, de la lista.
+Para ello, el programa define dos punteros auxiliares, `padre` y `actual`, que los utiliza para ir recorriendo el arbol. Luego, realiza un bucle de comparacion entre el dato pasado como parametro y el dato del puntero `actual` hasta hallar o no una coincidencia.
 
-Luego, utilizando la función `free`, se libera la memoria ocupada por el nodo, y llegamos al estado final sin ese nodo en la lista.
+Si encuentra el nodo a eliminar, procedemos a una comparacion mas, para saber de que tipo de eliminacion se trata, ya que las mismas fueron categorizadas en tres, una con cada funcion, segun el estado del nodo: nodo hoja, nodo con un hijo, o nodo con dos hijos.
 
-En cuanto a la complejidad computacional, eliminar el primer nodo de una lista tendrá una complejidad de **O(1)**.
+Para el nodo hoja, es decir, sin hijos, la eliminacion se realiza reconectando el arbol con la funcion auxiliar `reconectar_arbol(abb_t *abb, nodo_t *padre, nodo_t *nodo_viejo,nodo_t *nodo_nuevo)`, que simplemente verifica, primero, si el nodo tiene padre, para luego desconectar el nodo a eliminar, del arbol y luego liberar la memoria de ese nodo con la funcion auxiliar `liberar_nodo`.
+```
+// Fragmento dentro de reconectar_arbol
+if (padre) {
+  if (padre->izq == nodo_viejo) {
+    padre->izq = nodo_nuevo;
+  } else {
+    padre->der = nodo_nuevo;
+  }
+} else {
+  abb->raiz = nodo_nuevo;
+}
+
+// Funcion liberar_nodo
+void liberar_nodo(abb_t *abb, nodo_t *nodo)
+{
+	free(nodo);
+	abb->cantidad--;
+}
+  ```
 
 <p align="center">
   <img src="https://i.postimg.cc/kGsDBVts/eliminar-primer-elemento.png" alt="Lista eliminar primer elemento" width="800"/>
@@ -133,207 +186,108 @@ En cuanto a la complejidad computacional, eliminar el primer nodo de una lista t
 <br><br>
 
 
-#### void *lista_eliminar_ultimo_elemento(lista_t *lista);
-Similar a la función `lista_eliminar_primer_elemento`, esta función fue diseñada para eliminar el nodo dentro de la lista que ocupa la última posición. Para ello, el programa define dos punteros auxiliares, `borrar_nodo` que es el puntero que usa para eliminar el nodo, y `anterior`, que es un puntero pensado para recorrer los nodos hasta el `último-1`. Una vez encontrado el anteúltimo nodo, hacemos que el puntero `siguiente` del mismo apunte a **NULL**, y que el puntero `último` de la lista apunte a este nodo. De esa forma, desenlazamos el nodo que queríamos eliminar, y procedemos a eliminarlo utilizando la función `free`. En cuanto a la complejidad de esta función, ya que debe recorrer hasta el nodo anterior al que se quiere eliminar, tendrá una complejidad **O(n)**.
+
+///////
+
+
+
+Luego, para el nodo con un hijo, utiliza un puntero `*hijo` para identificar el hijo del nodo que vamos a eliminar, para luego con la funcion `reconectar_arbol`, conectar el nodo padre del eliminado, con el nodo hijo del eliminado, para luego, liberar la memoria del nodo desconectado del arbol con `liberar_nodo`.
+
+```
+// Fragmento de la funcion eliminar_nodo_con_un_hijo
+
+if (nodo->izq) {
+  hijo = nodo->izq;
+} else {
+  hijo = nodo->der;
+}
+reconectar_arbol(abb, padre, nodo, hijo);
+liberar_nodo(abb, nodo);
+```
+
+
+Para finalizar, tenemos el caso de querer eliminar un nodo que tiene tanto hijo a la izquierda como a la derecha. Para este caso defini la funcion auxiliar `eliminar_nodo_con_dos_hijos(abb_t *abb, nodo_t *nodo, nodo_t *padre)`, y una funcion `buscar_maximo` para hallar el predecesor del nodo a eliminar.
+
+Una vez que tenemos el predecesor, copiamos el dato del predecesor, al nodo que queriamos eliminar, de esta manera, quedan dos nodos con el mismo valor. Por ultimo, borramos el predecesor y luego liberamos el nodo eliminado.
+
+```
+//Fragmento de buscar maximo
+while (nodo->der) {
+  if (padre){
+    *padre = nodo;
+  nodo = nodo->der;
+  }
+}
+return nodo;
+
+
+// Fragmento de la funcion eliminar_nodo_con_dos_hijos
+(void)padre;
+nodo_t *padre_pred = nodo;
+nodo_t *pred = buscar_maximo(nodo->izq, &padre_pred);
+nodo->dato = pred->dato;
+
+if (!pred->izq && !pred->der) {
+  eliminar_nodo_hoja(abb, pred, padre_pred);
+} else {
+  eliminar_nodo_con_un_hijo(abb, pred, padre_pred);
+}
+```
 
 <p align="center">
-  <img src="https://i.postimg.cc/wvH7DYcy/Sin-ti-tulo-3.jpg" alt="Lista eliminar último elemento" width="800"/>
-  <img src="https://i.postimg.cc/gJdn3bqq/Sin-ti-tulo-4.jpg" alt="Lista eliminar último elemento" width="800"/>
-
+  <img src="https://i.postimg.cc/kGsDBVts/eliminar-primer-elemento.png" alt="Lista eliminar primer elemento" width="800"/>
   <br>
-  <em>Caso de eliminación del último nodo de la lista.</em>
+  <em>Caso de eliminación del primer nodo de la lista.</em>
 </p>
 <br><br>
 
-#### void *lista_eliminar_elemento(lista_t *lista, size_t posición);
-La función `eliminar_elemento`, recibe como parámetros un puntero a la lista, y la posición, y a diferencia de las funciones vistas anteriormente, se encarga de eliminar cualquier nodo en cualquier posición de la lista. Para ello utiliza un puntero auxiliar `borrar_nodo` que es el que utiliza para eliminar el nodo de la lista y liberar memoria, pero además, utiliza el puntero auxiliar `anterior` para recorrer la lista nodo a nodo hasta la posición `posición-1`, para luego modificar el puntero `siguiente` en esta posición haciendo que apunte a **NULL** para luego realizar la ya mencionada liberacion de memoria. Para cerrar, similar a la función `lista_eliminar_ultimo_elemento`, como tenemos que recorrer hasta el nodo anterior al eliminado, tendra una complejidad **O(1n)**.
 
-<p align="center">
-  <img src="https://i.postimg.cc/rsXg1mZ5/Sin-ti-tulo-1.jpg" alt="Lista eliminar elemento" width="800"/>
-  <img src="https://i.postimg.cc/tJQD3Tv1/Sin-ti-tulo-2.jpg" alt="Lista eliminar elemento" width="800"/>
-  <br>
-  <em>Caso de eliminación de nodo intermedio de la lista.</em>
-</p>
-<br><br>
 
-#### int lista_buscar_posicion(lista_t *lista, void *dato, int (*comparador)(const void *, const void *));
+#### void *abb_buscar(abb_t *abb, void *dato)
 
-La función `buscar_posicion`, recibe como parámetros un puntero a lista, y un puntero a dato, que son la lista donde vamos a buscar, y el dato que vamos a buscar.
+La función `abb_posicion`, recibe como parámetros un puntero al arbol, y un puntero a dato, que son la el arbol donde vamos a buscar, y el dato que vamos a buscar.
 
-Para buscar utiliza un comparador que verifica si el dato a comparar existe o no en alguno de los nodos de la lista. Define tambien un puntero `actual`, que recorre todos los nodos en busca de alguno que satisfaga al comparador.
+Para buscar utiliza dentro de una funcion auxiliar `abb_buscar_nodo_rec`, un comparador que verifica si el dato a comparar existe o no en alguno de los nodos del arbol. Para ello, compara si el dato del nodo en el que nos encontramos coincide o no con el buscado. Si no coincide, en base al resultado del comparador, se llama recursivamente pero cambiando el parametro inicial por el nodo de la izquierda si es menor, o de la derecha si mayor. Si al finalizar encuentra el nodo, lo devuelve, y si se queda sin nodos para comparar, el comparador devuelve **NULL** y se devuelve **NULL** como respuesta a no haber encontrado el nodo con el dato buscado.
 
-Luego con un bucle chequea uno a uno los nodos hasta encontrar o no el dato. Si el dato es encontrado devuelve la posición del nodo en la lista, y si no encuentra el dato, devuelve **-1**. Con respecto a la complejidad, ya que debe recorrer uno a uno los nodos hasta encontrar el buscado o no encontrarlo, tendra una complejidad **O(n)**.
 
-#### void *lista_buscar_elemento(lista_t *lista, size_t posicion);
 
-La función `buscar_elemento` tiene una funcionalidad similar a `buscar_posicion`, solo que como parámetros recibe una lista, y una posición, y con un bucle va recorriendo las posiciones de los nodos hasta hallar o no la posición pedida. Si encuentra la posición, devuelve el `dato` correspondiente a ese nodo, y si no encuentra la posición, devuelve **NULL**. En cuanto a la complejidad, similar a `buscar_posicion`, como debe recorrer los nodos uno a uno en busca de coincidencia o error, tendra una complejidad **O(n)**.
+#### void abb_destruir(abb_t *abb);
 
-#### void lista_destruir(lista_t *lista);
+Esta función recibe como parámetro un puntero el arbol y se encarga de destruir los nodos y la estructura del arbol a traves de la función recursiva `destruir_nodo_rec`, que destruye los nodos a izquierda y derecha de cada nodo, para luego, si existiese un destructor, destruir el `dato` del nodo.
 
-Esta función recibe como parámetro un puntero a la lista y se encarga de destruir los nodos y la estructura de la lista a traves de la función `free`. Es importante mencionar que si bien libera los nodos y la lista, no libera los datos almacenados dentro de cada nodo.
 En cuanto a la complejidad, como debe recorrer todos los nodos para liberar la memoria utilizada, tendra una complejidad **O(n)**.
 
-#### void lista_destruir_todo(lista_t *lista, void (*destructor)(void *));
+#### void abb_destruir_todo(abb_t *abb, void (*destructor)(void *));
 
-Esta función recibe como parámetros un puntero a la lista, y un destructor, lo que permite que a diferencia de `lista_destruir`, si pueda destruir los datos almacenados en cada nodo. En cuanto a la complejidad, al igual que `lista_destruir`,como debe recorrer todos los nodos para liberar la memoria utilizada, tendra una complejidad **O(n)**.
+Esta función recibe como parámetros un puntero al, y un destructor, lo que permite que a diferencia de `abb_destruir`, si pueda destruir los datos almacenados en cada nodo cuando llama recursivamente a `destruir_nodo_rec`.
 
-<hr>
-
-### Función para el iterador interno de la lista.
-
-#### size_t lista_con_cada_elemento(lista_t *lista, bool (*f)(void *, void *), void *extra);
-
-Esta función recibe como parámetros la lista , y un puntero a función `f`. La finalidad de la misma es aplicar una función`f` a los elementos de la lista, permitiendo asi, por ejemplo, cortar el bucle de manera temprana en caso de que lo pedido por la función `f` no haya sido satisfecho. La complejidad para esta función, depende de la cantidad de nodos que tenga la lista ya que hay que recorrerlos uno a uno, haciendo que su complejidad sea **O(n)**.
+En cuanto a la complejidad, al igual que `abb_destruir`,como debe recorrer todos los nodos para liberar la memoria utilizada, tendra una complejidad **O(n)**.
 
 <hr>
 
-### Funciones del iterador externo de la lista.
+### Función para el iterador interno del arbol.
 
-#### lista_iterador_t *lista_iterador_crear(lista_t *lista);
+#### size_t abb_con_cada_elemento(abb_t *abb, enum abb_recorrido modo, bool (*f)(void *, void *), void *extra)
 
-Esta función recibe como parámetro un puntero a lista, y crea un iterador interno de la lista `it`. Primero reserva memoria con `malloc` para el iterador, y luego apunta los punteros `lista` dentro del iterador a la lista, y el puntero `actual` al primero nodo de la lista. 
+Esta función recibe como parámetros el arbol , un modo de recorrido dado por un enum, que permite definir como se quiere recorrer el arbol y un puntero a función `f`.
 
-#### bool lista_iterador_hay_mas_elementos(lista_iterador_t *it);
-Esta función recibe como parámetro un puntero al iterador, y chequea si se acabaron los nodos en la lista. Para ello simplemente verifica hacia donde apunta el puntero `actual` dentro del iterador, ya que en una lista simplemente enlazada, el último nodo de la lista debe apuntar a **NULL**. Si apunta a **NULL** es porque ya no hay mas nodos que recorrer.
+La finalidad de la misma es aplicar una función`f` a los elementos del arbol segun el orden establecido.
 
-#### void lista_iterador_siguiente(lista_iterador_t *it);
-Esta función se encarga de modificar la dirección en la que apunta el puntero `actual` dentro del iterador de la lista.
+Los recorridos utilizados para ABB son **INORDEN**, que recorre el arbol nodo a nodo de la siguiente manera, primero el nodo de la izquierda, luego la raiz o nodo padre, y luego el nodo de la derecha, permitiendo recibir un recorrido en orden ascendente de los elementos del arbol.
 
-#### void *lista_iterador_obtener_actual(lista_iterador_t *it);
-Esta función recibe como parámetro el iterador y se encarga de devolver el dato almacenado en el nodo `actual`.
+Luego tenemos el recorrido **PREORDEN**, que recorre primero la raiz o nodo padre, luego el nodo de la izquierda, y luego el nodo de la derecha, de esta manera, recibiendo como resultado un orden que permite reconstruir el arbol.
 
-#### void lista_iterador_destruir(lista_iterador_t *it);
-Esta función recibe como parámetro el puntero al iterador y se encarga de liberar la memoria que habiamos reservado para el iterador.
+Por ultimo, tenemos el recorrido **POSTORDEN**, que recorre primero el nodo de la derecha, luego el de la izquierda, y luego la raiz, que resulta muy conveniente para la eliminacion de nodos del arbol ya que evita los casos de eliminacion de nodos con uno o dos hijos.
 
-Con respecto a la complejidad de las funciones del iterador, en todos los casos operan con un parámetro del puntero iterador, por lo cual, para todas las funciones la complejidad sera **O(1)**.
+<hr>
 
 
-### <ins>Primitivas de PILA y COLA
 
-#### cola_t *cola_crear(void);
-Función encargada de la creacion de la cola. Utiliza malloc para reservar memoria para una `cola_t` y un puntero para almacenar la dirección en memoria de la misma. Utiliza la primitiva de lista `lista_crear` para el creado de la lista. Si la cola fuese **NULL** o invalida, retorna **NULL**. Si estamos ante el caso de que la cola es valida, crea la cola y la devuelve. 
+### Uso del iterador, vectorizar el arbol
 
-Como solo inicializa la estructura sin recorrer nada, tiene una complejidad **O(1)**
-
-#### bool cola_encolar(cola_t *cola, void *elemento);
-Función que recibe como parámetro un puntero a la cola, y un puntero a un elemento, *encolando* el elemento a la cola. Utiliza la primitiva `lista_agregar` para agregar al final.
-
-Como utiliza la primitiva `lista_agregar` que tiene una complejidad **O(1)**, esta función tambien sera **O(1)**.
-
-
-#### void *cola_desencolar(cola_t *cola);
-Función que recibe como parámetro un puntero a la cola, y *desencola* el primer elemento de la cola usando la primitiva de lista `lista_eliminar_elemento`, pero como para lista, eliminar el primer elemento tiene una complejidad **O(1)**, esta función tambien tendra esa misma complejidad.
-
-#### void *cola_ver_primero(cola_t *cola);
-Función que recibe como parámetro un puntero a la cola, y accede al primer nodo. Como utiliza la primitiva de lista `lista_buscar_elemento` para ver el primer elemento, y esta función tiene complejidad **O(1)**, esta tambien tendra esa complejidad.
-
-#### size_t cola_cantidad(cola_t *cola);
-Función que recibe como parámetro un puntero a la cola, y devuelve la cantidad de elementos en la cola utilizando la primitiva de lista `lista_cantidad`. Como esa primitiva de lista tiene una complejided **O(1)**, esta función tambien tendra esa complejidad.
-
-#### void cola_destruir(cola_t *cola);
-Función que recibe como parámetro un puntero a la cola, y libera la memoria de la cola usando la primitiva de lista `lista_destruir` que tiene una complejidad **O(n)** por lo cual, esta función tambien tendra esa complejidad.
-
-#### pila_t *pila_crear(void);
-Función encargada de la creación de la pila. Utiliza malloc para reservar memoria para una pila_t y un puntero para almacenar la dirección en memoria de la misma. Utiliza la primitiva de lista lista_crear para el creado de la lista.
-
-Si la pila fuese **NULL** o invalida, retorna **NULL**. Si estamos ante el caso de que la pila es válida, crea la pila y la devuelve.
-
-Como solo inicializa la estructura sin recorrer nada, tiene una complejidad **O(1)**.
-
-#### bool pila_apilar(pila_t *pila, void *dato);
-Función que recibe como parámetro un puntero a la pila, y un puntero a un dato, *apilando* el elemento en la pila. Utiliza la primitiva de lista lista_agregar cuando la lista está vacia, y `lista_insertar` en la posición 0 cuando ya tiene elementos.
-
-Dado que ambas primitivas tienen complejidad **O(1)** en estos casos, esta función tambien tendrá una complejidad O(1).
-
-#### void *pila_desapilar(pila_t *pila);
-Función que recibe como parámetro un puntero a la pila, y *desapila* el elemento que se encuentra en el *tope*. Internamente utiliza la primitiva de lista `lista_eliminar_elemento` en la posición 0, que tiene una complejidad **O(1)**, por lo tanto, esta función también será **O(1)**.
-
-#### void *pila_ver_primero(pila_t *pila);
-Función que recibe como parámetro un puntero a la pila, y *desapila* el elemento que se encuentra en el tope. Internamente utiliza la primitiva de lista `lista_eliminar_elemento` en la posición 0, que tiene una complejidad **O(1)**, por lo tanto, esta función también será **O(1)**.
-
-
-#### bool pila_cantidad(pila_t *pila);
-Función que recibe como parámetro un puntero a la pila, y devuelve la cantidad de elementos que contiene. Utiliza la primitiva de lista `lista_cantidad`, que tiene una complejidad **O(1)**, por lo cual esta función también tendrá dicha complejidad.
-
-
-#### void pila_destruir(pila_t *pila);
-Función que recibe como parámetro un puntero a la pila, y libera la memoria utilizada por la pila, incluyendo la lista interna. Utiliza la primitiva de lista `lista_destruir`, que tiene una complejidad **O(n)**, por lo cual esta función también tendrá una complejidad **O(n)**.
-
-
+#### size_t abb_vectorizar(abb_t *abb, enum abb_recorrido tipo_recorrido, size_t cant, void **vector);
 
 
 ## Respuestas a las preguntas teóricas
 
-### Diferencia entre lista, lista enlazada y doblemente enlazada.
 
-Por empezar, la lista como tal es tipo de dato abstracto que define que operaciones estan permitidas, pero no asi como se van a almacenar los datos.
-
-Luego, esta la lista simplemente enlazada, que tiene como diferencial que se almacenan los datos a traves de nodos enlazados, donde cada nodo sabe cual es el nodo siguiente mediante un puntero.
-
-Otra de las caracteristicas de este tipo de lista es que el recorrido de la misma solo se puede hacer en un unico sentido que es el sentido de los nodos consecutivos entre si, y como beneficio, pese a que el recorrido es en una unica dirección, solamente tiene un puntero dentro del nodo hacia otro nodo, y requiere de menos memoria que su contraparte la doblemente enlazada.
-
-<p align="center">
-  <img src="https://i.postimg.cc/KzwLLHjF/Sin-ti-tulo-5.jpg" alt="Diagrama lista simplemente enlazada" width="800"/>
-  <br>
-  <em>Diagrama de una lista simplemente enlazada.</em>
-</p>
-<br><br>
-
-Por último, se encuentra la lista doblemente enlazada, que tiene caracteristicas similares a la simple, ya que tambien tiene nodos enlazados, pero la principal diferencia radica en que no tiene un unico sentido de recorrido, ya que posee un puntero hacia el nodo previo, lo que permite que en caso de que el usuario lo demande, pueda recorrer la lista en ambas direcciones.
-
-La desventaja de esto es que tiene un mayor uso de memoria y tiene mayor complejidad en las operaciones de inserción y eliminación, comparado con la lista simplemente enlazada.
-
-<p align="center">
-  <img src="https://i.postimg.cc/J0XXQ5Df/Sin-ti-tulo-6.jpg" alt="Diagrama lista doblemente enlazada" width="800"/>
-  <br>
-  <em>Diagrama de una lista doblemente enlazada.</em>
-</p>
-<br><br>
-
-<hr>
-
-### Lista circular
-
-La lista circular es una variante de la lista enlazada, y tiene como diferencia que en su último nodo, en lugar de apuntar hacia **NULL**, apunta nuevamente al primer nodo de la lista, dando asi la ventaja de que el recorrido se pueda iniciar desde cualquier nodo de la lista, y al tener el último nodo enlazado con el primero, permite un recorrido continuo.
-
-<p align="center">
-  <img src="https://i.postimg.cc/SR99Gf2w/Sin-ti-tulo-7.jpg" alt="Diagrama lista simple circular" width="800"/>
-  <br>
-  <em>Diagrama de una lista simple circular.</em>
-</p>
-<br><br>
-
-<hr>
-
-### Diferencia entre pila y cola
-
-La diferencia que existe entre una pila y una cola es la manera en la que manejan la inserción de nodos y la eliminación de los mismos.
-
-Por un lado, la pila maneja un principio de **LIFO**, el cual implica que inserta elementos por el *tope*, que en una lista seria el último nodo de la misma, y al eliminar, tambien lo hacemos iniciando por el tope, por lo cual si quisieramos desapilar el primer elemento de una pila, deberiamos desapilar todos los elementos para llegar a desapilar el primero.
-
-<p align="center">
-  <img src="https://i.postimg.cc/269px4RT/Sin-ti-tulo-8.jpg" alt="Diagrama Pila" width="800"/>
-  <br>
-  <em>Diagramas de inserción y eliminación de una pila.</em>
-</p>
-<br><br>
-
-
-Por otra parte, la cola, maneja un principio de **FIFO**, el cual implica que se inserta por el *final* al igual que la pila, pero esta se desencola empezando por el primer elemento, con lo cual, si quisieras desencolar el primero elemento, se puede hacer directamente, y si se quisiera desencolar el último elemento insertado, se deberian desencolar todos los elementos de la cola.
-
-<p align="center">
-  <img src="https://i.postimg.cc/85X8bhQR/Sin-ti-tulo-9.jpg" alt="Diagrama Cola" width="800"/>
-  <br>
-  <em>Diagramas de inserción y eliminación de una cola.</em>
-</p>
-<br><br>
-
-<hr>
-
-### Diferencia entre un iterador interno y externo
-
-La diferencia entre un iterador interno y uno externo es fundamentalmente como permiten manipular el recorrido de los nodos de una lista.
-
-Mientras que para el iterador interno, el recorrido es llevado a cabo por la propia lista, por ejemplo, en nuestro programa con la función `lista_con_cada_elemento` que corta tempranamente con una evaluacion de un bool, el iterador externo es una estructura independiente, y permite asi que el usuario tenga el control sobre como se realiza el recorrido de la lista.
-
-Podemos ver un ejemplo de como se compone un iterador externo con las funciones definidas para la lista, `lista_iterador_hay_mas_elementos`, `lista_iterador_siguiente`, `lista_iterador_obtener_actual`.
