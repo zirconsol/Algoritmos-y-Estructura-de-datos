@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include "src/main_aux.h"
 
+static void pokemon_destruir(void *dato)
+{
+	(void)dato;
+}
+
 int main(int argc, char *argv[])
 {
 	if (argc < 2) {
@@ -34,8 +39,8 @@ int main(int argc, char *argv[])
 
 	if (!tp1_con_cada_pokemon(archivo, indexar_pokemon, &indice)) {
 		fprintf(stderr, "Error indexando pokemones\n");
-		abb_destruir(abb_por_id);
 		abb_destruir(abb_por_nombre);
+		abb_destruir(abb_por_id);
 		tp1_destruir(archivo);
 		return 1;
 	}
@@ -54,16 +59,21 @@ int main(int argc, char *argv[])
 				buscar_por_id(abb_por_id, (int)id);
 			mostrar_pokemon_o_error(pokemon);
 		}
+
 	} else if (argc == 4 && strcmp(argv[2], "nombre") == 0) {
 		struct pokemon *pokemon =
 			buscar_por_nombre(abb_por_nombre, argv[3]);
 		mostrar_pokemon_o_error(pokemon);
+
 	} else {
+		abb_destruir(abb_por_nombre);
+		abb_destruir(abb_por_id);
+		tp1_destruir(archivo);
 		return 1;
 	}
 
-	abb_destruir(abb_por_id);
 	abb_destruir(abb_por_nombre);
+	abb_destruir(abb_por_id);
 	tp1_destruir(archivo);
 	return 0;
 }
