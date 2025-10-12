@@ -10,4 +10,4 @@ correr_tp: compilar_tp
 
 compilar_tp:
 	gcc -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -O2 -g \
-	    main.c src/abb.c src/abb_aux_rec.c -o abb
+	    main.c src/abb.c src/abb_aux_rec.c src/main_aux.c src/tp1.c -o abb

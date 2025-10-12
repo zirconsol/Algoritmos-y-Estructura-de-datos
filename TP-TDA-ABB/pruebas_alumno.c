@@ -121,6 +121,7 @@ void insertar_null_no_inserta_en_arbol(void)
 		     "Se puede insertar un elemento NULL");
 
 	pa2m_afirmar(abb_cantidad(arbol) == 2, "El arbol tiene 2 elementos");
+	abb_destruir(arbol);
 }
 
 void insertar_varios_elementos_correctamente(void)

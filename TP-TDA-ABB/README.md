@@ -10,26 +10,29 @@
 
 ```bash
 gcc -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -O2 -g \
-	    main.c src/lista.c src/pila.c src/cola.c src/tp1.c -o lista
+    main.c src/abb.c src/abb_aux_rec.c -o abb
 ```
 
 - Para ejecutar **(ejemplo de busqueda por nombre, chequear comandos)**:
 
 ```bash
-./lista normal.csv nombre Chikorita
+./abb normal.csv nombre Chikorita
 ```
 
 - Para ejecutar con valgrind:
 ```bash
 valgrind --track-origins=yes --leak-check=full \
-    ./lista normal.csv nombre Chikorita
+    ./abb normal.csv nombre Chikorita
 ```
 
 ---
 
 #  Funcionamiento
 
-Para el TP de TDA ABB, se realizaron varias estructuras que garantizan el correcto funcionamiento e implementación de un **arbol binario de busqueda**, para el cual se realizo una implementacion principal `abb.c`, con su respectivo header `abb.h`. Ademas, para modularizar el codigo y separar las primitivas disponibles para el usuario, se implemento un modulo `abb_aux_rec.c` con su respectivo header `abb_aux_rec.h`, que contiene distintas implementaciones tanto de funciones recursivas, como auxiliares para la correcta implementacion de las primitivas principales.
+Para el TP de ***TDA ABB***, se realizaron varias estructuras que garantizan el correcto funcionamiento e implementación de un **arbol binario de busqueda**.
+ Este tipo de dato abstracto tiene la ventaja de ser muy eficiente a la hora de realizar busquedas ya que permite trabajar con una complejidad de **O(log(n))** para arboles balanceados y **O(n)** en el peor escenario debido a sus ramificaciones a izquierda y derecha, permitiendo acortar la cantidad de recorridos a realizar a la mitad en cada descarte.
+ 
+ Se realizo una implementacion principal `abb.c`, con su respectivo header `abb.h`. Ademas, para modularizar el codigo y separar las primitivas disponibles para el usuario, se implemento un modulo `abb_aux_rec.c` con su respectivo header `abb_aux_rec.h`, que contiene distintas implementaciones tanto de funciones recursivas, como auxiliares para la correcta implementacion de las primitivas principales.
 
 ## abb.c
 Para poder implementar correctamente el abb, trabaje con una `estruc_interna.h` predefinida que determina la estructura propia del abb. Para trabajar con los nodos, se utilizaria `struct nodo` que contiene un puntero `void` `dato`, y un puntero al nodo `struct nodo *izq` y `struct nodo *der` correspondientes a las dos posibles ramas de un nodo en un ABB.
@@ -57,12 +60,14 @@ return arbol;
 
 Como solo inicializa la estructura sin recorrer nada, tiene una complejidad **O(1)**.
 
+
 <p align="center">
-  <img src="https://i.postimg.cc/mgtCzHvH/Captura-de-pantalla-2025-09-25-a-la-s-6-09-19-p-m.png" alt="Lista agregar" width="800"/>
+  <img src="img/diagrama1.png" alt="Lista agregar" width="800"/>
   <br>
-  <em>Diagrama de la función lista_crear.</em>
+  <em>Diagrama de la función abb_crear.</em>
 </p>
 <br><br>
+
 
 #### bool abb_esta_vacio(abb_t *abb);
 Esta función se encarga de verificar si el arbol está vacío o no, chequeando si el puntero `raiz` apunta a ****NULL**** o no. Esto lo definí así ya que, al ingresar el primer nodo al arbol, `raiz` va a apuntar a ese nodo, y por ende, verificando su estado podemos ver rápidamente si el arbol tiene raiz,y por ende, si se encuentra vacío o no.
@@ -98,9 +103,9 @@ La función `abb_insertar` tiene como finalidad agregar nodos al arbol. Para ell
 Para el caso de insertar en la raiz, estamos ante el mejor caso de complejidad, que tendria una complejidad de **O(1)**.
 
 <p align="center">
-  <img src="https://i.postimg.cc/Hnwpq0jJ/Lista-agregar.png" alt="Lista agregar" width="800"/>
+  <img src="img/diagrama2.png" alt="Lista insertar en raiz" width="800"/>
   <br>
-  <em>Diagrama de la función lista_agregar.</em>
+  <em>Diagrama de la función lista_insertar para el caso de la raiz.</em>
 </p>
 <br><br>
 
@@ -120,7 +125,7 @@ int cmp = comparador(dato, nodo->dato);
   if (cmp <= 0)
     nodo->izq = abb_insertar_nodo_rec(
       nodo->izq, dato, comparador, insertado);
-  else
+  else{
     nodo->der = abb_insertar_nodo_rec(
       nodo->der, dato, comparador, insertado);
 	}
@@ -128,26 +133,18 @@ int cmp = comparador(dato, nodo->dato);
 ```
 
 <p align="center">
-  <img src="https://i.postimg.cc/Hnwpq0jJ/Lista-agregar.png" alt="Lista agregar" width="800"/>
+  <img src="img/diagrama3.png" alt="Lista agregar" width="800"/>
   <br>
-  <em>Diagrama de la función lista_agregar.</em>
+  <em>Diagrama de la función lista_insertar con un elemento menor que raiz.</em>
 </p>
 <br><br>
-///
+
 <p align="center">
-  <img src="https://i.postimg.cc/Hnwpq0jJ/Lista-agregar.png" alt="Lista agregar" width="800"/>
+  <img src="img/diagrama3.png" alt="Lista agregar" width="800"/>
   <br>
-  <em>Diagrama de la función lista_agregar.</em>
+  <em>Diagrama de la función lista_insertar con un elemento mayor que raiz.</em>
 </p>
 <br><br>
-////
-///
-///
-//
-//
-
-
-
 
 #### void *abb_eliminar(abb_t *abb, void *dato)
 
@@ -179,17 +176,11 @@ void liberar_nodo(abb_t *abb, nodo_t *nodo)
   ```
 
 <p align="center">
-  <img src="https://i.postimg.cc/kGsDBVts/eliminar-primer-elemento.png" alt="Lista eliminar primer elemento" width="800"/>
+  <img src="img/diagrama5.png" alt="Lista agregar" width="800"/>
   <br>
-  <em>Caso de eliminación del primer nodo de la lista.</em>
+  <em>Diagrama de la función abb_eliminar con nodo hoja.</em>
 </p>
 <br><br>
-
-
-
-///////
-
-
 
 Luego, para el nodo con un hijo, utiliza un puntero `*hijo` para identificar el hijo del nodo que vamos a eliminar, para luego con la funcion `reconectar_arbol`, conectar el nodo padre del eliminado, con el nodo hijo del eliminado, para luego, liberar la memoria del nodo desconectado del arbol con `liberar_nodo`.
 
@@ -204,6 +195,12 @@ if (nodo->izq) {
 reconectar_arbol(abb, padre, nodo, hijo);
 liberar_nodo(abb, nodo);
 ```
+<p align="center">
+  <img src="img/diagrama5.png" alt="Lista agregar" width="800"/>
+  <br>
+  <em>Diagrama de la función abb_eliminar con nodo con un hijo.</em>
+</p>
+<br><br>
 
 
 Para finalizar, tenemos el caso de querer eliminar un nodo que tiene tanto hijo a la izquierda como a la derecha. Para este caso defini la funcion auxiliar `eliminar_nodo_con_dos_hijos(abb_t *abb, nodo_t *nodo, nodo_t *padre)`, y una funcion `buscar_maximo` para hallar el predecesor del nodo a eliminar.
@@ -235,9 +232,9 @@ if (!pred->izq && !pred->der) {
 ```
 
 <p align="center">
-  <img src="https://i.postimg.cc/kGsDBVts/eliminar-primer-elemento.png" alt="Lista eliminar primer elemento" width="800"/>
+  <img src="img/diagrama7.png" alt="Lista agregar" width="800"/>
   <br>
-  <em>Caso de eliminación del primer nodo de la lista.</em>
+  <em>Diagrama de la función abb_eliminar con nodo con dos hijo.</em>
 </p>
 <br><br>
 
@@ -275,9 +272,30 @@ La finalidad de la misma es aplicar una función`f` a los elementos del arbol se
 
 Los recorridos utilizados para ABB son **INORDEN**, que recorre el arbol nodo a nodo de la siguiente manera, primero el nodo de la izquierda, luego la raiz o nodo padre, y luego el nodo de la derecha, permitiendo recibir un recorrido en orden ascendente de los elementos del arbol.
 
+<p align="center">
+  <img src="img/diagrama8.png" alt="Lista agregar" width="800"/>
+  <br>
+  <em>Diagrama de recorrido inorden.</em>
+</p>
+<br><br>
+
 Luego tenemos el recorrido **PREORDEN**, que recorre primero la raiz o nodo padre, luego el nodo de la izquierda, y luego el nodo de la derecha, de esta manera, recibiendo como resultado un orden que permite reconstruir el arbol.
 
+<p align="center">
+  <img src="img/diagrama9.png" alt="Lista agregar" width="800"/>
+  <br>
+  <em>Diagrama de recorrido preorden.</em>
+</p>
+<br><br>
+
 Por ultimo, tenemos el recorrido **POSTORDEN**, que recorre primero el nodo de la derecha, luego el de la izquierda, y luego la raiz, que resulta muy conveniente para la eliminacion de nodos del arbol ya que evita los casos de eliminacion de nodos con uno o dos hijos.
+
+<p align="center">
+  <img src="img/diagrama10.png" alt="Lista agregar" width="800"/>
+  <br>
+  <em>Diagrama de recorrido postorden.</em>
+</p>
+<br><br>
 
 <hr>
 
@@ -287,7 +305,53 @@ Por ultimo, tenemos el recorrido **POSTORDEN**, que recorre primero el nodo de l
 
 #### size_t abb_vectorizar(abb_t *abb, enum abb_recorrido tipo_recorrido, size_t cant, void **vector);
 
+La funcion vectorizar recibe como parametros el arbol, un tipo de recorrido de los mencionados para iterar sobre el arbol, la cantidad de elementos que podemos vectorizar, y un array de punteros a vectores.
+
+La misma tiene como finalidad copiar los elementos del arbol a un vector de dimension dada, permitiendo que se pueda vectorizar todo el arbol, solo una cantidad, por ejemplo, si el vector tiene capacidad para 4 elementos y el arbol contiene 7 elementos, solo se vectorizan los primeros 4 elementos del recorrido. Para la implementacion, defini una estructura vector contenedor con los datos del vector donde queremos insertar los elementos, defini una funcion auxiliar `insertar_dato_en_vector` y aplique el iterador interno con esa funcion para cada elemento del arbol.
+
+```
+\\ Fragmento de abb_vectorizar
+
+struct vector_contenedor vec_recibido = { .destino = vector,
+						  .cap = cant,
+						  .insertados = 0 };
+
+
+\\Funcion insertar_dato_en_vector
+bool insertar_dato_en_vector(void *dato, void *extra)
+{
+	struct vector_contenedor *vector = extra;
+
+	if (vector->insertados >= vector->cap) {
+		return false;
+	}
+	vector->destino[vector->insertados] = dato;
+	vector->insertados++;
+	return true;
+}
+```
+
+
 
 ## Respuestas a las preguntas teóricas
 
+### Diferencias entre arbol, arbol binario, y arbol binario de busqueda.
+####  Arbol
+Cuando hablamos de un arbol, hablamos de una estructura de datos jerarquica armada a traves de nodos, que pueden poseer o no hijos, pero de los cuales sabesmos que posene solo nodo como padre.
 
+Una implementacion muy comun de arboles son, por ejemplo, en los directorios de nuestro sistema operativo, donde las carpetas contienen subcarpetas y archivos.
+
+A diferencia de un ABB que limitan la cantidad de hijos a un maximo de dos, al no tener ningun tipo de restriccion en la cantidad de nodos hijo posibles, tienen una complejidad temporal de **O(n)**, ya que el peor caso seria el recorrido de la totalidad del arbol.
+
+#### Arbol binario
+A diferencia el arbol general, el binario ya pone restricciones sobre la cantidad de hijos, limitandolos a un maximo de dos, pero, a diferencia del arbol binario de busqueda, no necesita que los datos este ordenados dentro del arbol. Un tipico ejemplo de un arbol binario podria ser la estructura de un torneo de futbol, donde cada par de hijos conforman una llave de enfrentamientos, hasta llegar a la final y ganador del torneo.
+Similar a lo que ocurre con un arbol, al no tener la informacion ordenada, la complejidad temporal es de **O(n)** ya que en el peor escenario posible, se deberan recorrer todos los elementos del arbol.
+
+#### Arbol binario de busqueda
+Como ya mencionamos en los dos casos anteriores, el arbol binario de busqueda es tambien una estructura de datos jerarquica con un maximo de dos hijos por nodo, ubicando los elementos menores al nodo padre a la izquierda del arbol, y los elementos mayores al nodo padre a la derecha.
+
+Para este tipo de arboles, el orden es fundamental ya que es lo que permite que se puede mejorar la complejidad temporal a la hora de recorrerlo.
+
+Su implementacion permite realizar operaciones de busqueda, por ejemplo, buscar indices en una base de datos, o nombres de una agenda telefonica.
+
+Si bien su complejidad temporal en el mejor caso posible puede ser de **0(log(n))**, para el peor caso posible, tambien sera **O(n)**.
