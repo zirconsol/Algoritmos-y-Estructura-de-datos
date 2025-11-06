@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "estruc_interna.h": "c",
+        "stdbool.h": "c",
+        "stdlib.h": "c"
+    }
+}

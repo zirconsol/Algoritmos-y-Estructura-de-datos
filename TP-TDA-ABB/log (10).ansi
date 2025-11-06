@@ -1,0 +1,1130 @@
+                                                   
+,--------.,------.       ,---.  ,-----.  ,-----.   
+'--.  .--'|  .--. '     /  O  \ |  |) /_ |  |) /_  
+   |  |   |  '--' |    |  .-.  ||  .-.  \|  .-.  \ 
+   |  |   |  | --'     |  | |  ||  '--' /|  '--' / 
+   `--'   `--'         `--' `--'`------' `------'  
+                                                   
+Archivos Entregados
+===================
+
+[ 150]  .
+|-- [ 48K]  Archivo.zip
+|-- [ 19K]  README.md
+|-- [ 217]  img
+|   |-- [ 51K]  diagrama1.png
+|   |-- [ 80K]  diagrama10.png
+|   |-- [ 60K]  diagrama2.png
+|   |-- [ 57K]  diagrama3.png
+|   |-- [ 59K]  diagrama4.png
+|   |-- [ 97K]  diagrama5.png
+|   |-- [105K]  diagrama6.png
+|   |-- [116K]  diagrama7.png
+|   |-- [ 81K]  diagrama8.png
+|   `-- [ 80K]  diagrama9.png
+|-- [1.7K]  main.c
+|-- [ 396]  makefile
+|-- [ 127]  normal.csv
+|-- [1.2K]  pa2m.h
+|-- [ 16K]  pruebas_alumno.c
+`-- [ 177]  src
+    |-- [2.8K]  abb.c
+    |-- [ 849]  abb.h
+    |-- [4.9K]  abb_aux_rec.c
+    |-- [1.2K]  abb_aux_rec.h
+    |-- [ 399]  estruc_interna.h
+    |-- [2.3K]  main_aux.c
+    |-- [ 640]  main_aux.h
+    |-- [ 17K]  tp1.c
+    `-- [2.3K]  tp1.h
+
+3 directories, 26 files
+
+[1;35mLinter
+======
+[0m
+[1;32mLINTER OK[0m
+
+[1;35mCompilación y pruebas
+========================[0m
+rm -f *.o pruebas_chanutron pruebas_alumno tp-abb
+gcc -std=c99 -Wall -Wconversion -Wtype-limits -pedantic  -Werror -O0 -Wtrampolines -g src/*.c pruebas_chanutron.c pruebas_aux.c -o pruebas_chanutron
+rm -f pruebas_chanutron.c pruebas_aux.c pruebas_abb.c
+valgrind --leak-check=full --track-origins=yes --show-reachable=yes --error-exitcode=2 --show-leak-kinds=all --trace-children=yes ./pruebas_chanutron
+==17077== Memcheck, a memory error detector
+==17077== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==17077== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==17077== Command: ./pruebas_chanutron
+==17077== 
+[33;1m
+Pruebas de creación de ABB
+===========================[37;1m
+[32;1m✓ [37;1mSe puede crear un abb
+[32;1m✓ [37;1mEl abb se crea vacío
+[32;1m✓ [37;1mLa cantidad de elementos es cero
+[32;1m✓ [37;1mEl elemento raíz es NULL
+==17078== 
+==17078== HEAP SUMMARY:
+==17078==     in use at exit: 0 bytes in 0 blocks
+==17078==   total heap usage: 2 allocs, 2 frees, 4,120 bytes allocated
+==17078== 
+==17078== All heap blocks were freed -- no leaks are possible
+==17078== 
+==17078== For lists of detected and suppressed errors, rerun with: -s
+==17078== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de inserción
+=====================[37;1m
+[32;1m✓ [37;1mPuedo insertar un elemento en el abb.
+[32;1m✓ [37;1mEl elemento queda como valor raíz
+[32;1m✓ [37;1mLa función abb_raiz devuelve el elemento correcto.
+[32;1m✓ [37;1mEl abb ya no está vacío.
+[32;1m✓ [37;1mLa cantidad de elementos es 1
+[32;1m✓ [37;1mPuedo insertar un elemento menor que el primero.
+[32;1m✓ [37;1mEl abb queda con un hijo izquierdo y sin hijo derecho.
+[32;1m✓ [37;1mEl elemento queda a la izquierda de la raíz.
+[32;1m✓ [37;1mLa cantidad de elementos es 2
+[32;1m✓ [37;1mPuedo insertar un elemento mayor que el primero.
+[32;1m✓ [37;1mEl abb queda con un hijo izquierdo y un hijo derecho.
+[32;1m✓ [37;1mEl elemento queda a la derecha de la raíz.
+[32;1m✓ [37;1mLa cantidad de elementos es 3
+[32;1m✓ [37;1mLos tres elementos se encuentran en las posiciones esperadas.
+[32;1m✓ [37;1mPuedo insertar un elemento menor a los que estaban.
+[32;1m✓ [37;1mEl hijo izquierdo del raíz ahora tiene un hijo izquierdo.
+[32;1m✓ [37;1mEl elemento tiene el valor esperado.
+[32;1m✓ [37;1mLa cantidad de elementos es 4
+[32;1m✓ [37;1mPuedo insertar un elemento mayor a los que estaban.
+[32;1m✓ [37;1mEl hijo derecho del raíz ahora tiene un hijo derecho.
+[32;1m✓ [37;1mEl elemento tiene el valor esperado.
+[32;1m✓ [37;1mLa cantidad de elementos es 5
+==17079== 
+==17079== HEAP SUMMARY:
+==17079==     in use at exit: 0 bytes in 0 blocks
+==17079==   total heap usage: 7 allocs, 7 frees, 4,240 bytes allocated
+==17079== 
+==17079== All heap blocks were freed -- no leaks are possible
+==17079== 
+==17079== For lists of detected and suppressed errors, rerun with: -s
+==17079== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de búsqueda
+====================[37;1m
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBusco un elemento existente y lo encuentro
+[32;1m✓ [37;1mBuscar un elemento inexistente devuelve NULL.
+==17080== 
+==17080== HEAP SUMMARY:
+==17080==     in use at exit: 0 bytes in 0 blocks
+==17080==   total heap usage: 12 allocs, 12 frees, 4,360 bytes allocated
+==17080== 
+==17080== All heap blocks were freed -- no leaks are possible
+==17080== 
+==17080== For lists of detected and suppressed errors, rerun with: -s
+==17080== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de borrado
+==================[37;1m
+[32;1m✓ [37;1mPuedo borrar un nodo hoja
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a38 == 0x1fff000a38).
+[32;1m✓ [37;1mEl nodo eliminado no existe mas.
+[32;1m✓ [37;1mLa cantidad de elementos es 6
+[32;1m✓ [37;1mPuedo borrar un nodo no hoja con un hijo.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a28 == 0x1fff000a28).
+[32;1m✓ [37;1mEl nodo que queda en su lugar es el nodo hijo.
+[32;1m✓ [37;1mLa cantidad de elementos es 5
+[32;1m✓ [37;1mPuedo borrar un nodo con dos hijos.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a30 == 0x1fff000a30).
+[32;1m✓ [37;1mEl nodo que queda en su lugar es el predecesor inorden ¯\_(ツ)_/¯ .
+[32;1m✓ [37;1mPuedo borrar el nodo raíz (con dos hijos).
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a20 == 0x1fff000a20).
+[32;1m✓ [37;1mEl nodo que queda en su lugar es el predecesor inorden ¯\_(ツ)_/¯ .
+[32;1m✓ [37;1mLa cantidad de elementos es 3
+[32;1m✓ [37;1mA la izquierda de la raíz queda el elemento esperado.
+[32;1m✓ [37;1mA la derecha de la raíz queda el elemento esperado.
+[32;1m✓ [37;1mPuedo borrar el nodo raíz (con un hijo).
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a48 == 0x1fff000a48).
+[32;1m✓ [37;1mEl nodo que queda en su lugar es el unico hijo.
+[32;1m✓ [37;1mA la izquierda de la raíz queda el elemento esperado.
+[32;1m✓ [37;1mA la derecha de la raíz queda el elemento esperado.
+[32;1m✓ [37;1mPuedo borrar otro nodo hoja.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a40 == 0x1fff000a40).
+[32;1m✓ [37;1mA la izquierda de la raíz queda el elemento esperado.
+[32;1m✓ [37;1mA la derecha de la raíz queda el elemento esperado.
+[32;1m✓ [37;1mPuedo borrar el nodo raíz (sin hijos).
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a50 == 0x1fff000a50).
+[32;1m✓ [37;1mLa cantidad de elementos es 0
+[32;1m✓ [37;1mNo queda nadie en la raíz, abb vacío.
+[32;1m✓ [37;1mLa funcion abb_esta_vacio devuelve true.
+==17081== 
+==17081== HEAP SUMMARY:
+==17081==     in use at exit: 0 bytes in 0 blocks
+==17081==   total heap usage: 9 allocs, 9 frees, 4,288 bytes allocated
+==17081== 
+==17081== All heap blocks were freed -- no leaks are possible
+==17081== 
+==17081== For lists of detected and suppressed errors, rerun with: -s
+==17081== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de borrado (siempre borra la raíz)
+===========================================[37;1m
+[32;1m✓ [37;1mPuedo borrar la raíz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a00 == 0x1fff000a00).
+[32;1m✓ [37;1mEl elemento que queda en la raíz es el predecesor inorden ¯\_(ツ)_/¯ .
+[32;1m✓ [37;1mLa función abb_raiz devuelve el elemento correcto.
+[32;1m✓ [37;1mPuedo borrar la raíz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a48 == 0x1fff000a48).
+[32;1m✓ [37;1mEl elemento que queda en la raíz es el predecesor inorden ¯\_(ツ)_/¯ .
+[32;1m✓ [37;1mLa función abb_raiz devuelve el elemento correcto.
+[32;1m✓ [37;1mPuedo borrar la raíz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a40 == 0x1fff000a40).
+[32;1m✓ [37;1mEl elemento que queda en la raíz es el predecesor inorden ¯\_(ツ)_/¯ .
+[32;1m✓ [37;1mLa función abb_raiz devuelve el elemento correcto.
+[32;1m✓ [37;1mLa cantidad de elementos es 7 (7 == 7).
+[32;1m✓ [37;1mPude eliminar todos los elementos restantes del abb siempre borrando la raíz.
+[32;1m✓ [37;1mEl abb queda vacío.
+==17082== 
+==17082== HEAP SUMMARY:
+==17082==     in use at exit: 0 bytes in 0 blocks
+==17082==   total heap usage: 12 allocs, 12 frees, 4,360 bytes allocated
+==17082== 
+==17082== All heap blocks were freed -- no leaks are possible
+==17082== 
+==17082== For lists of detected and suppressed errors, rerun with: -s
+==17082== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de insertar/eliminar/buscar
+===================================[37;1m
+[32;1m✓ [37;1mBorro la raiz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a00 == 0x1fff000a00).
+[32;1m✓ [37;1mEl elemento no existe mas en el abb.
+[32;1m✓ [37;1mPuedo volver a insertar el elemento.
+[32;1m✓ [37;1mEl elemento existe en el abb y puedo buscarlo.
+[32;1m✓ [37;1mBorro la raiz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a28 == 0x1fff000a28).
+[32;1m✓ [37;1mEl elemento no existe mas en el abb.
+[32;1m✓ [37;1mPuedo volver a insertar el elemento.
+[32;1m✓ [37;1mEl elemento existe en el abb y puedo buscarlo.
+[32;1m✓ [37;1mBorro la raiz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a18 == 0x1fff000a18).
+[32;1m✓ [37;1mEl elemento no existe mas en el abb.
+[32;1m✓ [37;1mPuedo volver a insertar el elemento.
+[32;1m✓ [37;1mEl elemento existe en el abb y puedo buscarlo.
+[32;1m✓ [37;1mBorro la raiz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a08 == 0x1fff000a08).
+[32;1m✓ [37;1mEl elemento no existe mas en el abb.
+[32;1m✓ [37;1mPuedo volver a insertar el elemento.
+[32;1m✓ [37;1mEl elemento existe en el abb y puedo buscarlo.
+[32;1m✓ [37;1mBorro la raiz del abb.
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000a10 == 0x1fff000a10).
+[32;1m✓ [37;1mEl elemento no existe mas en el abb.
+[32;1m✓ [37;1mPuedo volver a insertar el elemento.
+[32;1m✓ [37;1mEl elemento existe en el abb y puedo buscarlo.
+[32;1m✓ [37;1mSe puede eliminar todos los elementos del abb sin problemas.
+[32;1m✓ [37;1mEl abb queda con 0 elementos (0).
+[32;1m✓ [37;1mSe pueden volver a insertar elementos en el abb (0 inserciones fallidas).
+[32;1m✓ [37;1mBusco un elemento y lo encuentro
+[32;1m✓ [37;1mBusco un elemento y lo encuentro
+[32;1m✓ [37;1mBusco un elemento y lo encuentro
+==17083== 
+==17083== HEAP SUMMARY:
+==17083==     in use at exit: 0 bytes in 0 blocks
+==17083==   total heap usage: 27 allocs, 27 frees, 4,720 bytes allocated
+==17083== 
+==17083== All heap blocks were freed -- no leaks are possible
+==17083== 
+==17083== For lists of detected and suppressed errors, rerun with: -s
+==17083== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de destructor
+=====================[37;1m
+[32;1m✓ [37;1mLuego de llamar a abb_destruir_todo, se invoca el destructor la cantidad de veces correcta.
+[32;1m✓ [37;1mEl destructor fue invocado sobre los elementos correctos
+==17084== 
+==17084== HEAP SUMMARY:
+==17084==     in use at exit: 0 bytes in 0 blocks
+==17084==   total heap usage: 14 allocs, 14 frees, 4,408 bytes allocated
+==17084== 
+==17084== All heap blocks were freed -- no leaks are possible
+==17084== 
+==17084== For lists of detected and suppressed errors, rerun with: -s
+==17084== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas de vectorizacion e iterador interno
+===========================================[37;1m
+[33;1m
+Vectorizacion inorden
+=====================[37;1m
+[32;1m✓ [37;1mLa función de vectorizacion devuelve la cantidad de elementos esperados
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden esperado.
+[32;1m✓ [37;1mPido recorrer menos elementos de los existentes para hacer el recorrido.
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden y cantidad esperado.
+[32;1m✓ [37;1mPido recorrer mas elementos de los existentes para hacer el recorrido.
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden y cantidad esperado.
+[33;1m
+Vectorizacion preorden
+======================[37;1m
+[32;1m✓ [37;1mLa función de vectorizacion devuelve la cantidad de elementos esperados
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden esperado.
+[32;1m✓ [37;1mPido recorrer menos elementos de los existentes para hacer el recorrido.
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden y cantidad esperado.
+[32;1m✓ [37;1mPido recorrer mas elementos de los existentes para hacer el recorrido.
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden y cantidad esperado.
+[33;1m
+Vectorizacion postorden
+=======================[37;1m
+[32;1m✓ [37;1mLa función de vectorizacion devuelve la cantidad de elementos esperados
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden esperado.
+[32;1m✓ [37;1mPido recorrer menos elementos de los existentes para hacer el recorrido.
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden y cantidad esperado.
+[32;1m✓ [37;1mPido recorrer mas elementos de los existentes para hacer el recorrido.
+[32;1m✓ [37;1mLos elementos en el vector tienen el orden y cantidad esperado.
+[33;1m
+Iterador interno inorden
+========================[37;1m
+[32;1m✓ [37;1mEl iterador interno devuelve la cantidad de elementos que se esperaba iterar.
+[32;1m✓ [37;1mSe invocó la función la cantidad de veces esperada.
+[32;1m✓ [37;1mSe recorrieron las claves en el orden esperado.
+[32;1m✓ [37;1mCuando la función devuelve false, deja de iterar y devuelve la cantidad correcta.
+[32;1m✓ [37;1mSe invocó la función de iteracion la cantidad de veces esperada.
+[33;1m
+Iterador interno preorden
+=========================[37;1m
+[32;1m✓ [37;1mEl iterador interno devuelve la cantidad de elementos que se esperaba iterar.
+[32;1m✓ [37;1mSe invocó la función la cantidad de veces esperada.
+[32;1m✓ [37;1mSe recorrieron las claves en el orden esperado.
+[32;1m✓ [37;1mCuando la función devuelve false, deja de iterar y devuelve la cantidad correcta.
+[32;1m✓ [37;1mSe invocó la función de iteracion la cantidad de veces esperada.
+[33;1m
+Iterador interno postorden
+==========================[37;1m
+[32;1m✓ [37;1mEl iterador interno devuelve la cantidad de elementos que se esperaba iterar.
+[32;1m✓ [37;1mSe invocó la función la cantidad de veces esperada.
+[32;1m✓ [37;1mSe recorrieron las claves en el orden esperado.
+[32;1m✓ [37;1mCuando la función devuelve false, deja de iterar y devuelve la cantidad correcta.
+[32;1m✓ [37;1mSe invocó la función de iteracion la cantidad de veces esperada.
+==17085== 
+==17085== HEAP SUMMARY:
+==17085==     in use at exit: 0 bytes in 0 blocks
+==17085==   total heap usage: 14 allocs, 14 frees, 4,408 bytes allocated
+==17085== 
+==17085== All heap blocks were freed -- no leaks are possible
+==17085== 
+==17085== For lists of detected and suppressed errors, rerun with: -s
+==17085== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas con NULL
+================[37;1m
+[32;1m✓ [37;1mNo puedo insertar nada en un abb nulo.
+[32;1m✓ [37;1mNo puedo buscar nada en un abb nulo.
+[32;1m✓ [37;1mNo puedo borrar nada de en un abb nulo.
+[32;1m✓ [37;1mUn abb nulo es vacío.
+[32;1m✓ [37;1mLa cantidad de elementos de un abb NULL es 0
+[32;1m✓ [37;1mNo puedo iterar un abb nulo.
+[32;1m✓ [37;1mLa raíz de un abb nulo es NULL.
+[32;1m✓ [37;1mNo puedo iterar con una funcion nula.
+[32;1m✓ [37;1mPuedo iterar con puntero extra nulo.
+[32;1m✓ [37;1mPuedo insertar elementos null sin problemas
+[32;1m✓ [37;1mPuedo insertar elementos null sin problemas
+[32;1m✓ [37;1mPuedo insertar elementos null sin problemas
+==17086== 
+==17086== HEAP SUMMARY:
+==17086==     in use at exit: 0 bytes in 0 blocks
+==17086==   total heap usage: 16 allocs, 16 frees, 4,456 bytes allocated
+==17086== 
+==17086== All heap blocks were freed -- no leaks are possible
+==17086== 
+==17086== For lists of detected and suppressed errors, rerun with: -s
+==17086== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+------------ MÁS PRUEBAS DEL TDA ABB ------------
+==================================================[37;1m
+[33;1m
+PRUEBAS DE CREACIÓN Y DESTRUCCIÓN
+===================================[37;1m
+[33;1m
+Destrucción de abbs NULL
+=========================[37;1m
+[32;1m✓ [37;1mSe está por probar si es posible destruir un abb nulo.
+[32;1m✓ [37;1mSe está por probar si es posible destruir un abb nulo con un destructor válido.
+==17088== 
+==17088== HEAP SUMMARY:
+==17088==     in use at exit: 0 bytes in 0 blocks
+==17088==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17088== 
+==17088== All heap blocks were freed -- no leaks are possible
+==17088== 
+==17088== For lists of detected and suppressed errors, rerun with: -s
+==17088== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Creación de abbs con comparador válido e inválido
+====================================================[37;1m
+[32;1m✓ [37;1mSe crea el abb.
+[32;1m✓ [37;1mEl abb se crea vacío.
+[32;1m✓ [37;1mEl tamaño de un abb recién creado es 0.
+[32;1m✓ [37;1mSe está por probar si es posible destruir un abb vacío.
+[32;1m✓ [37;1mSe crea otro abb.
+[32;1m✓ [37;1mSe está por probar si es posible destruir este abb vacío con un destructor nulo.
+[32;1m✓ [37;1mNo es posible crear un abb con un comparador nulo.
+==17089== 
+==17089== HEAP SUMMARY:
+==17089==     in use at exit: 0 bytes in 0 blocks
+==17089==   total heap usage: 3 allocs, 3 frees, 4,144 bytes allocated
+==17089== 
+==17089== All heap blocks were freed -- no leaks are possible
+==17089== 
+==17089== For lists of detected and suppressed errors, rerun with: -s
+==17089== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17087== 
+==17087== HEAP SUMMARY:
+==17087==     in use at exit: 0 bytes in 0 blocks
+==17087==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17087== 
+==17087== All heap blocks were freed -- no leaks are possible
+==17087== 
+==17087== For lists of detected and suppressed errors, rerun with: -s
+==17087== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+PRUEBAS DE INSERCIÓN
+=====================[37;1m
+[33;1m
+Inserción en abb nulo
+======================[37;1m
+[32;1m✓ [37;1mAl intentar insertar en un abb nulo, se devuelve false
+==17091== 
+==17091== HEAP SUMMARY:
+==17091==     in use at exit: 0 bytes in 0 blocks
+==17091==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17091== 
+==17091== All heap blocks were freed -- no leaks are possible
+==17091== 
+==17091== For lists of detected and suppressed errors, rerun with: -s
+==17091== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Inserciones en abb válido
+==========================[37;1m
+[32;1m✓ [37;1mEs posible insertar un elemento nulo en un abb válido
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mEl abb posee un elemento
+[32;1m✓ [37;1mEs posible insertar un elemento no nulo en un abb válido
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mEl abb posee un elemento (1 == 1).
+[32;1m✓ [37;1mEs posible insertar un elemento que vive en el heap en un abb válido
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mEl abb posee un elemento
+[32;1m✓ [37;1mEs posible insertar un elemento en un abb válido
+[32;1m✓ [37;1mEs posible insertar otro elemento
+[32;1m✓ [37;1mEs posible insertar otro elemento
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mEl abb posee tres elemento
+[32;1m✓ [37;1mSe crea un nuevo arbol y se insertan 500 elementos (500 == 500).
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mEs posible insertar un elemento en un abb válido
+[32;1m✓ [37;1mEs posible insertar otro elemento 
+[32;1m✓ [37;1mEs posible insertar un elemento repetido en el abb
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mEl abb posee tres elemento
+==17092== 
+==17092== HEAP SUMMARY:
+==17092==     in use at exit: 0 bytes in 0 blocks
+==17092==   total heap usage: 517 allocs, 517 frees, 16,460 bytes allocated
+==17092== 
+==17092== All heap blocks were freed -- no leaks are possible
+==17092== 
+==17092== For lists of detected and suppressed errors, rerun with: -s
+==17092== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17090== 
+==17090== HEAP SUMMARY:
+==17090==     in use at exit: 0 bytes in 0 blocks
+==17090==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17090== 
+==17090== All heap blocks were freed -- no leaks are possible
+==17090== 
+==17090== For lists of detected and suppressed errors, rerun with: -s
+==17090== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+PRUEBAS DE BÚSQUEDA
+====================[37;1m
+[33;1m
+Búsqueda en abb nulo
+=====================[37;1m
+[32;1m✓ [37;1mBuscar un elemento válido en un abb nulo devuelve NULL.
+==17094== 
+==17094== HEAP SUMMARY:
+==17094==     in use at exit: 0 bytes in 0 blocks
+==17094==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17094== 
+==17094== All heap blocks were freed -- no leaks are possible
+==17094== 
+==17094== For lists of detected and suppressed errors, rerun with: -s
+==17094== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Búsqueda de elementos existentes e inexistentes en abb válido
+===============================================================[37;1m
+[32;1m✓ [37;1mSe encontró el elemento buscado.
+[32;1m✓ [37;1mSe buscó un elemento inexistente en un abb y se devolvió NULL.
+==17095== 
+==17095== HEAP SUMMARY:
+==17095==     in use at exit: 0 bytes in 0 blocks
+==17095==   total heap usage: 4 allocs, 4 frees, 4,168 bytes allocated
+==17095== 
+==17095== All heap blocks were freed -- no leaks are possible
+==17095== 
+==17095== For lists of detected and suppressed errors, rerun with: -s
+==17095== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Pruebas mixtas de búsqueda
+===========================[37;1m
+[32;1m✓ [37;1mSe creó un abb y se insertó un elemento. Se encuentra ese elemento.
+[32;1m✓ [37;1mSe insertan múltiples elementos, algunos repetidos.
+[32;1m✓ [37;1mSe busca un elemento que no se encuentra en el abb y se devuelve NULL.
+[32;1m✓ [37;1mSe busca uno de los elementos repetidos en el abb y se lo encuentra.
+[32;1m✓ [37;1mSe eliminan elementos del abb.
+[32;1m✓ [37;1mSe busca un elemento que continúa en el abb y se lo encuentra
+[32;1m✓ [37;1mSe busca un elemento que ya no se encuentra en el abb y se devuelve NULL.
+==17096== 
+==17096== HEAP SUMMARY:
+==17096==     in use at exit: 0 bytes in 0 blocks
+==17096==   total heap usage: 6 allocs, 6 frees, 4,216 bytes allocated
+==17096== 
+==17096== All heap blocks were freed -- no leaks are possible
+==17096== 
+==17096== For lists of detected and suppressed errors, rerun with: -s
+==17096== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17093== 
+==17093== HEAP SUMMARY:
+==17093==     in use at exit: 0 bytes in 0 blocks
+==17093==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17093== 
+==17093== All heap blocks were freed -- no leaks are possible
+==17093== 
+==17093== For lists of detected and suppressed errors, rerun with: -s
+==17093== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+PRUEBAS DE ELIMINACIÓN
+=======================[37;1m
+[33;1m
+Eliminación en abb nulo
+========================[37;1m
+[32;1m✓ [37;1mNo se puede eliminar de un abb nulo
+==17098== 
+==17098== HEAP SUMMARY:
+==17098==     in use at exit: 0 bytes in 0 blocks
+==17098==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17098== 
+==17098== All heap blocks were freed -- no leaks are possible
+==17098== 
+==17098== For lists of detected and suppressed errors, rerun with: -s
+==17098== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Eliminación de elementos existentes e inexistentes en abb válido
+==================================================================[37;1m
+[32;1m✓ [37;1mSe tiene un abb no vacío
+[32;1m✓ [37;1mEs posible eliminar el unico elemento que tiene el abb
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009d4 == 0x1fff0009d4).
+[32;1m✓ [37;1mEl abb ahora está vacío
+[32;1m✓ [37;1mSe tiene un abb no vacío
+[32;1m✓ [37;1mEs posible eliminar el unico elemento que tiene el abb
+[32;1m✓ [37;1mEl elemento devuelto es el esperado ((nil) == (nil)).
+[32;1m✓ [37;1mEl abb ahora está vacío
+[32;1m✓ [37;1mSe tiene un abb vacío
+[32;1m✓ [37;1mIntentar eliminar un elemento de un abb vacío devuelve false
+[32;1m✓ [37;1mEl abb continúa vacío
+[32;1m✓ [37;1mSe inserta un elemento en el abb. Ahora ya no está vacío
+[32;1m✓ [37;1mIntentar eliminar un elemento que no se encuentra en el abb devuelve false
+[32;1m✓ [37;1mEl abb no borró el elemento que almacenaba
+==17099== 
+==17099== HEAP SUMMARY:
+==17099==     in use at exit: 0 bytes in 0 blocks
+==17099==   total heap usage: 7 allocs, 7 frees, 4,240 bytes allocated
+==17099== 
+==17099== All heap blocks were freed -- no leaks are possible
+==17099== 
+==17099== For lists of detected and suppressed errors, rerun with: -s
+==17099== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Eliminación de varios elementos de abbs grandes
+================================================[37;1m
+[32;1m✓ [37;1mTengo un nuevo abb. Su tamaño es 16
+[32;1m✓ [37;1mEs posible quitar la raiz
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000998 == 0x1fff000998).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 15 (15).
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo izquierdo, sin nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009a4 == 0x1fff0009a4).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 14
+[32;1m✓ [37;1mEs posible quitar un elemento que tiene dos hijos y varios nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff00099c == 0x1fff00099c).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 13
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo izquierdo, con nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009d4 == 0x1fff0009d4).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 12
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo dercho, con nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009a8 == 0x1fff0009a8).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 11
+[32;1m✓ [37;1mEs posible quitar un elemento que tiene hijo izquierdo y derecho, sin nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009a0 == 0x1fff0009a0).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 10
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo derecho, sin nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009b8 == 0x1fff0009b8).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 9
+[32;1m✓ [37;1mEs posible quitar la nueva raiz, que tiene hijos derecho e izquierdo
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009c8 == 0x1fff0009c8).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 8
+[32;1m✓ [37;1mEs posible quitar un elemento que tiene hijo izquierdo y derecho, con nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009c4 == 0x1fff0009c4).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 7
+[32;1m✓ [37;1mEs posible quitar la nueva raiz, que no tiene hijo izquierdo, así que la reemplaza su hijo derecho
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009b0 == 0x1fff0009b0).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 6
+[32;1m✓ [37;1mEs posible quitar un elemento que no tiene hijos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009d0 == 0x1fff0009d0).
+[32;1m✓ [37;1mBusco el elemento que acabo de borrar del abb y no lo encuentro
+[32;1m✓ [37;1mEl tamaño del abb ahora es 5
+==17100== 
+==17100== HEAP SUMMARY:
+==17100==     in use at exit: 0 bytes in 0 blocks
+==17100==   total heap usage: 18 allocs, 18 frees, 4,504 bytes allocated
+==17100== 
+==17100== All heap blocks were freed -- no leaks are possible
+==17100== 
+==17100== For lists of detected and suppressed errors, rerun with: -s
+==17100== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17097== 
+==17097== HEAP SUMMARY:
+==17097==     in use at exit: 0 bytes in 0 blocks
+==17097==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17097== 
+==17097== All heap blocks were freed -- no leaks are possible
+==17097== 
+==17097== For lists of detected and suppressed errors, rerun with: -s
+==17097== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+PRUEBAS DEL ITERADOR
+====================[37;1m
+[33;1m
+Iterar un abb nulo
+==================[37;1m
+[32;1m✓ [37;1mIterar un abb NULL de manera INORDEN devuelve 0
+[32;1m✓ [37;1mIterar un abb NULL de manera PREORDEN devuelve 0
+[32;1m✓ [37;1mIterar un abb NULL de manera POSTORDEN devuelve 0
+==17102== 
+==17102== HEAP SUMMARY:
+==17102==     in use at exit: 0 bytes in 0 blocks
+==17102==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17102== 
+==17102== All heap blocks were freed -- no leaks are possible
+==17102== 
+==17102== For lists of detected and suppressed errors, rerun with: -s
+==17102== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Iterar con una función nula
+============================[37;1m
+[32;1m✓ [37;1mIterar de manera INORDEN un abb válido con una función NULL devuelve 0
+[32;1m✓ [37;1mIterar de manera PREORDEN un abb válido con una función NULL devuelve 0
+[32;1m✓ [37;1mIterar de manera POSTORDEN un abb válido con una función NULL devuelve 0
+==17103== 
+==17103== HEAP SUMMARY:
+==17103==     in use at exit: 0 bytes in 0 blocks
+==17103==   total heap usage: 2 allocs, 2 frees, 4,120 bytes allocated
+==17103== 
+==17103== All heap blocks were freed -- no leaks are possible
+==17103== 
+==17103== For lists of detected and suppressed errors, rerun with: -s
+==17103== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Iterar un abb válido
+=====================[37;1m
+[32;1m✓ [37;1mSe crea un abb.
+[32;1m✓ [37;1mSe itera el abb de manera INORDEN en su totalidad con un aux nulo y se devuelve 0 correctamente
+[32;1m✓ [37;1mSe itera el abb de manera PREORDEN en su totalidad con un aux nulo y se devuelve 0 correctamente
+[32;1m✓ [37;1mSe itera el abb de manera POSTORDEN en su totalidad con un aux nulo y se devuelve 0 correctamente
+[32;1m✓ [37;1mSe crea un abb y se insertan varios elementos.
+[32;1m✓ [37;1mSe itera el abb de manera INORDEN en su totalidad con un aux nulo y se devuelve la cantidad correcta de elementos
+[32;1m✓ [37;1mSe itera el abb de manera PREORDEN en su totalidad con un aux nulo y se devuelve la cantidad correcta de elementos
+[32;1m✓ [37;1mSe itera el abb de manera POSTORDEN en su totalidad con un aux nulo y se devuelve la cantidad correcta de elementos
+[32;1m✓ [37;1mSe itera un abb de manera INORDEN parcialmente y se devuelve la cantidad correcta.
+[32;1m✓ [37;1mSe itera un abb de manera PREORDEN parcialmente y se devuelve la cantidad correcta.
+[32;1m✓ [37;1mSe itera un abb de manera POSTORDEN parcialmente y se devuelve la cantidad correcta.
+==17104== 
+==17104== HEAP SUMMARY:
+==17104==     in use at exit: 0 bytes in 0 blocks
+==17104==   total heap usage: 14 allocs, 14 frees, 4,408 bytes allocated
+==17104== 
+==17104== All heap blocks were freed -- no leaks are possible
+==17104== 
+==17104== For lists of detected and suppressed errors, rerun with: -s
+==17104== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17101== 
+==17101== HEAP SUMMARY:
+==17101==     in use at exit: 0 bytes in 0 blocks
+==17101==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17101== 
+==17101== All heap blocks were freed -- no leaks are possible
+==17101== 
+==17101== For lists of detected and suppressed errors, rerun with: -s
+==17101== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+PRUEBAS DE RECORRIDOS CON ARRAY
+===============================[37;1m
+[33;1m
+Recorrer un abb nulo
+====================[37;1m
+[32;1m✓ [37;1mSi se intenta recorrer de manera INORDEN un abb NULL, se devuelve el valor 0
+[32;1m✓ [37;1mSi se intenta recorrer de manera PREORDEN un abb NULL, se devuelve el valor 0
+[32;1m✓ [37;1mSi se intenta recorrer de manera POSTORDEN un abb NULL, se devuelve el valor 0
+==17106== 
+==17106== HEAP SUMMARY:
+==17106==     in use at exit: 0 bytes in 0 blocks
+==17106==   total heap usage: 2 allocs, 2 frees, 4,128 bytes allocated
+==17106== 
+==17106== All heap blocks were freed -- no leaks are possible
+==17106== 
+==17106== For lists of detected and suppressed errors, rerun with: -s
+==17106== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Recorrer con un array nulo y con tamanio cero
+=============================================[37;1m
+[32;1m✓ [37;1mSi se intenta recorrer de manera INORDEN un abb válido con un array nulo, se devuelve 0
+[32;1m✓ [37;1mSi se intenta recorrer de manera PREORDEN un abb válido con un array nulo, se devuelve 0
+[32;1m✓ [37;1mSi se intenta recorrer de manera POSTORDEN un abb válido con un array nulo, se devuelve 0
+==17107== 
+==17107== HEAP SUMMARY:
+==17107==     in use at exit: 0 bytes in 0 blocks
+==17107==   total heap usage: 2 allocs, 2 frees, 4,120 bytes allocated
+==17107== 
+==17107== All heap blocks were freed -- no leaks are possible
+==17107== 
+==17107== For lists of detected and suppressed errors, rerun with: -s
+==17107== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Recorrer un abb válido
+=======================[37;1m
+[32;1m✓ [37;1mSi se intenta recorrer de manera INORDEN un abb vacío, se devuelve 0
+[32;1m✓ [37;1mSi se intenta recorrer de manera PREORDEN un abb vacío, se devuelve 0
+[32;1m✓ [37;1mSi se intenta recorrer de manera POSTORDEN un abb vacío, se devuelve 0
+[32;1m✓ [37;1mSe recorre un abb de manera INORDEN con menos elementos que posiciones en el array, y se devuelve la cantidad correcta de elementos.
+[32;1m✓ [37;1mEl primer elemento en el array es el correcto
+[32;1m✓ [37;1mEl segundo elemento en el array es el correcto
+[32;1m✓ [37;1mEl tercer elemento en el array es el correcto
+[32;1m✓ [37;1mSe recorre un abb de manera PREORDEN con menos elementos que posiciones en el array, y se devuelve la cantidad correcta de elementos.
+[32;1m✓ [37;1mEl primer elemento en el array es el correcto
+[32;1m✓ [37;1mEl segundo elemento en el array es el correcto
+[32;1m✓ [37;1mEl tercer elemento en el array es el correcto
+[32;1m✓ [37;1mSe recorre un abb de manera POSTORDEN con menos elementos que posiciones en el array, y se devuelve la cantidad correcta de elementos.
+[32;1m✓ [37;1mEl primer elemento en el array es el correcto
+[32;1m✓ [37;1mEl segundo elemento en el array es el correcto
+[32;1m✓ [37;1mEl tercer elemento en el array es el correcto
+[32;1m✓ [37;1mSe recorre un abb de manera INORDEN con más elementos que posiciones en el array, y se devuelve el tope del array.
+[32;1m✓ [37;1mEl primer elemento en el array es el correcto
+[32;1m✓ [37;1mEl segundo elemento en el array es el correcto
+[32;1m✓ [37;1mEl tercer elemento en el array es el correcto
+[32;1m✓ [37;1mEl cuarto elemento en el array es el correcto
+[32;1m✓ [37;1mSe recorre un abb de manera PREORDEN con más elementos que posiciones en el array, y se devuelve el tope del array.
+[32;1m✓ [37;1mEl primer elemento en el array es el correcto
+[32;1m✓ [37;1mEl segundo elemento en el array es el correcto
+[32;1m✓ [37;1mEl tercer elemento en el array es el correcto
+[32;1m✓ [37;1mEl cuarto elemento en el array es el correcto
+[32;1m✓ [37;1mSe recorre un abb de manera POSTORDEN con más elementos que posiciones en el array, y se devuelve el tope del array.
+[32;1m✓ [37;1mEl primer elemento en el array es el correcto
+[32;1m✓ [37;1mEl segundo elemento en el array es el correcto
+[32;1m✓ [37;1mEl tercer elemento en el array es el correcto
+[32;1m✓ [37;1mEl cuarto elemento en el array es el correcto
+==17108== 
+==17108== HEAP SUMMARY:
+==17108==     in use at exit: 0 bytes in 0 blocks
+==17108==   total heap usage: 16 allocs, 16 frees, 4,488 bytes allocated
+==17108== 
+==17108== All heap blocks were freed -- no leaks are possible
+==17108== 
+==17108== For lists of detected and suppressed errors, rerun with: -s
+==17108== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[33;1m
+Recorrer un abb válido, modificarlo y volver a recorrerlo
+==========================================================[37;1m
+[32;1m✓ [37;1mEs posible insertar en un nuevo abb
+[32;1m✓ [37;1mEl abb posee 1 elemento
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl elemento almacenado es el correcto
+[32;1m✓ [37;1mSe insertaron varios elementos. Ahora el abb posee 6 elementos
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mSe vuelve a recorrer el abb y se almacena la nueva cantidad correcta de elementos
+[32;1m✓ [37;1mEl primer elemento es el correcto
+[32;1m✓ [37;1mEl segundo elemento es el correcto
+[32;1m✓ [37;1mEl tercer elemento es el correcto
+[32;1m✓ [37;1mEl cuarto elemento es el correcto
+[32;1m✓ [37;1mEl quinto elemento es el correcto
+[32;1m✓ [37;1mEl sexto elemento es el correcto
+[32;1m✓ [37;1mSe inserta un nuevo elemento en el abb, más chico que el menor anterior
+[32;1m✓ [37;1mSe inserta un elemento repetido en el abb
+[32;1m✓ [37;1mSe inserta un nuevo elemento máximo en el abb, mayor al más grande anterior
+[32;1m✓ [37;1mSe insertaron varios elementos. Ahora el abb posee 9 elementos
+[32;1m✓ [37;1mEl abb no está vacío
+[32;1m✓ [37;1mSe vuelve a recorrer el abb y se almacena la nueva cantidad correcta de elementos
+[32;1m✓ [37;1mEl primer elemento es el correcto
+[32;1m✓ [37;1mEl segundo elemento es el correcto
+[32;1m✓ [37;1mEl tercer elemento es el correcto
+[32;1m✓ [37;1mEl cuarto elemento es el correcto
+[32;1m✓ [37;1mEl quinto elemento es el correcto
+[32;1m✓ [37;1mEl sexto elemento es el correcto
+[32;1m✓ [37;1mEl séptimo elemento es el correcto
+[32;1m✓ [37;1mEl octavo elemento es el correcto
+[32;1m✓ [37;1mEl noveno elemento es el correcto
+[32;1m✓ [37;1mTengo un nuevo abb. Su tamaño es 16
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 11º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 12º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 13º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 14º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 15º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 16º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar la raiz
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009a4 == 0x1fff0009a4).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 11º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 12º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 13º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 14º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 15º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo izquierdo, sin nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000994 == 0x1fff000994).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 11º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 12º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 13º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 14º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que tiene dos hijos y varios nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009bc == 0x1fff0009bc).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 11º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 12º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 13º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo izquierdo, con nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009b4 == 0x1fff0009b4).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 11º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 12º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo dercho, con nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009c0 == 0x1fff0009c0).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 11º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que tiene hijo izquierdo y derecho, sin nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000998 == 0x1fff000998).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 10º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que solo tiene hijo derecho, sin nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff000990 == 0x1fff000990).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 9º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar la nueva raiz, que tiene hijos derecho e izquierdo
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009a0 == 0x1fff0009a0).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 8º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que tiene hijo izquierdo y derecho, con nietos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009b8 == 0x1fff0009b8).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 7º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar la nueva raiz, que no tiene hijo izquierdo, así que la reemplaza su hijo derecho
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff00099c == 0x1fff00099c).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 6º elemento almacenado es el correcto
+[32;1m✓ [37;1mEs posible quitar un elemento que no tiene hijos
+[32;1m✓ [37;1mEl elemento devuelto es el esperado (0x1fff0009a8 == 0x1fff0009a8).
+[32;1m✓ [37;1mSe recorre el abb y se almacena la cantidad correcta de elementos
+[32;1m✓ [37;1mEl 1º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 2º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 3º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 4º elemento almacenado es el correcto
+[32;1m✓ [37;1mEl 5º elemento almacenado es el correcto
+==17109== 
+==17109== HEAP SUMMARY:
+==17109==     in use at exit: 0 bytes in 0 blocks
+==17109==   total heap usage: 30 allocs, 30 frees, 5,136 bytes allocated
+==17109== 
+==17109== All heap blocks were freed -- no leaks are possible
+==17109== 
+==17109== For lists of detected and suppressed errors, rerun with: -s
+==17109== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==17105== 
+==17105== HEAP SUMMARY:
+==17105==     in use at exit: 0 bytes in 0 blocks
+==17105==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17105== 
+==17105== All heap blocks were freed -- no leaks are possible
+==17105== 
+==17105== For lists of detected and suppressed errors, rerun with: -s
+==17105== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+[37;1m
+---------------------------------
+505 pruebas corridas, 0 errores - OK
+[0m==17077== 
+==17077== HEAP SUMMARY:
+==17077==     in use at exit: 0 bytes in 0 blocks
+==17077==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==17077== 
+==17077== All heap blocks were freed -- no leaks are possible
+==17077== 
+==17077== For lists of detected and suppressed errors, rerun with: -s
+==17077== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+[1;32mParece que tu TP pasa todas las pruebas de la cátedra... Pasemos ahora a las tuyas.[0m
+
+rm -f *.o pruebas_chanutron pruebas_alumno tp-abb
+gcc -std=c99 -Wall -Wconversion -Wtype-limits -pedantic  -Werror -O0 -Wtrampolines -g src/*.c pruebas_alumno.c -o pruebas_alumno
+valgrind --leak-check=full --track-origins=yes --show-reachable=yes --error-exitcode=2 --show-leak-kinds=all --trace-children=yes ./pruebas_alumno
+==17129== Memcheck, a memory error detector
+==17129== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==17129== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==17129== Command: ./pruebas_alumno
+==17129== 
+[33;1m
+Pruebas de creacion y chequeo de validez del arbol
+==================================================[37;1m
+[32;1m✓ [37;1mABB creado correctamente[0m
+[32;1m✓ [37;1mArbol creado comienza vacio[0m
+[32;1m✓ [37;1mABB con comparador invalido devuelve NULL[0m
+[32;1m✓ [37;1mABB invalido devuelve true[0m
+[33;1m
+Pruebas de insercion de elementos en arbol
+==========================================[37;1m
+[32;1m✓ [37;1mNo se puede insertar elemento en un ABB nulo[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl arbol ya no esta vacio[0m
+[32;1m✓ [37;1mEl arbol tiene 1 elemento
+[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 3 existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 1 elemento[0m
+[32;1m✓ [37;1mSe puede insertar un elemento NULL[0m
+[32;1m✓ [37;1mEl arbol tiene 2 elementos[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 3 existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 1 elemento[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 1 existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 2 elementos[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 5 existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 3 elementos[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 7 existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 4 elementos
+[0m
+[32;1m✓ [37;1mLa raiz del arbol es el numero 3[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 1 existe en el arbol[0m
+[32;1m✓ [37;1mLa raiz del arbol es el numero 3[0m
+[32;1m✓ [37;1mEl arbol tiene 2 elementos[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 5 existe en el arbol[0m
+[32;1m✓ [37;1mLa raiz del arbol es el numero 3[0m
+[32;1m✓ [37;1mEl arbol tiene 3 elementos[0m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl numero 7 existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 4 elementos[0m
+[33;1m
+Pruebas de eliminacion de elementos de un arbol
+===============================================[37;1m
+[32;1m✓ [37;1mEl arbol tiene 3 elementos[0m
+[32;1m✓ [37;1mSe elimino correctamente el numero 6[0m
+[32;1m✓ [37;1mEl numero 6 no existe en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 2 elementos[0m
+[32;1m✓ [37;1mEl numero 4 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 2 esta en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 4 elementos[0m
+[32;1m✓ [37;1mSe elimino correctamente el numero 2[0m
+[32;1m✓ [37;1mPreorden correcto[0m
+[32;1m✓ [37;1mEl numero 4 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 1 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 6 esta en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 3 elementos[0m
+[32;1m✓ [37;1mEl arbol tiene 7 elementos[0m
+[32;1m✓ [37;1mSe elimino correctamente el numero 6[0m
+[32;1m✓ [37;1mPreorden correcto[0m
+[32;1m✓ [37;1mEl numero 4 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 2 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 1 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 3 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 5 esta en el arbol[0m
+[32;1m✓ [37;1mEl numero 7 esta en el arbol[0m
+[32;1m✓ [37;1mEl arbol tiene 6 elementos[0m
+[33;1m
+Pruebas de busqueda de elementos en arbol
+=========================================[37;1m
+[32;1m✓ [37;1mSe inserto el elemento en el arbol[0m
+[32;1m✓ [37;1mEl elemento no existe en el arbol[0m
+[32;1m✓ [37;1mEl elemento no se encontro al buscar[0m
+[32;1m✓ [37;1mEl elemento fue encontrado en el arbol[0m
+[33;1m
+Pruebas de busqueda de elementos en arbol
+=========================================[37;1m
+[32;1m✓ [37;1mInorden correcto[0m
+[32;1m✓ [37;1mPreorden correcto[0m
+[32;1m✓ [37;1mPostorden correcto[0m
+[32;1m✓ [37;1mEl array no esta inorden[0m
+[32;1m✓ [37;1mEl array no esta en postorden[0m
+[32;1m✓ [37;1mEl array no esta en preorden[0m
+[33;1m
+Pruebas de vectorizacion de elementos del arbol
+===============================================[37;1m
+[32;1m✓ [37;1mSe vectorizaron 3 elementos del arbol en inorden[0m
+[32;1m✓ [37;1mOrden inorden correcto: 1,2,3[0m
+[32;1m✓ [37;1mSe vectorizaron 3 elementos del arbol en preorden[0m
+[32;1m✓ [37;1mOrden inorden correcto: 4,2,1[0m
+[32;1m✓ [37;1mSe vectorizaron 3 elementos del arbol en preorden[0m
+[32;1m✓ [37;1mOrden inorden correcto: 1,3,2[0m
+
+---------------------------------
+76 pruebas corridas, 0 errores - OK
+[0m==17129== 
+==17129== HEAP SUMMARY:
+==17129==     in use at exit: 0 bytes in 0 blocks
+==17129==   total heap usage: 112 allocs, 112 frees, 6,760 bytes allocated
+==17129== 
+==17129== All heap blocks were freed -- no leaks are possible
+==17129== 
+==17129== For lists of detected and suppressed errors, rerun with: -s
+==17129== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+[1;32mParece que tu TP pasa tus pruebas también.[0m
+
+
+
+[1;32mParece que tu TP pasa tus pruebas también.[0m
+
+
+[1;35m¿Y EL MAIN?[0m
+
+rm -f *.o pruebas_chanutron pruebas_alumno tp-abb
+gcc -std=c99 -Wall -Wconversion -Wtype-limits -pedantic  -Werror -O0 -Wtrampolines -g src/*.c main.c -o abb
+valgrind --leak-check=full --track-origins=yes --show-reachable=yes --error-exitcode=2 --show-leak-kinds=all --trace-children=yes ./abb ejemplos-bot/duplicados.dupe buscar nombre Pikachu
+==17150== Memcheck, a memory error detector
+==17150== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==17150== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==17150== Command: ./abb ejemplos-bot/duplicados.dupe buscar nombre Pikachu
+==17150== 
+==17150== 
+==17150== HEAP SUMMARY:
+==17150==     in use at exit: 0 bytes in 0 blocks
+==17150==   total heap usage: 84 allocs, 84 frees, 6,359 bytes allocated
+==17150== 
+==17150== All heap blocks were freed -- no leaks are possible
+==17150== 
+==17150== For lists of detected and suppressed errors, rerun with: -s
+==17150== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+make: *** [makefile-chanutron:24: valgrind-abb] Error 1
+
+[1;31m¡ERROR CORRIENDO VALGRIND DEL MAIN! Revisa tu entrega.[0m
+

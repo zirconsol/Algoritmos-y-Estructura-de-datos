@@ -6,11 +6,6 @@
 #include <stdlib.h>
 #include "src/main_aux.h"
 
-static void pokemon_destruir(void *dato)
-{
-	(void)dato;
-}
-
 int main(int argc, char *argv[])
 {
 	if (argc < 2) {
@@ -49,21 +44,44 @@ int main(int argc, char *argv[])
 		(void)abb_con_cada_elemento(abb_por_nombre, ABB_INORDEN,
 					    imprimir_visitante, NULL);
 
-	} else if (argc == 4 && strcmp(argv[2], "id") == 0) {
-		char *aux = NULL;
-		long id = strtol(argv[3], &aux, 10);
-		if (!argv[3][0] || (aux && *aux)) {
-			fprintf(stderr, "ID invalido: %s\n", argv[3]);
-		} else {
+		abb_destruir(abb_por_nombre);
+		abb_destruir(abb_por_id);
+		tp1_destruir(archivo);
+		return 0;
+
+	} else if (argc == 5 && strcmp(argv[2], "buscar") == 0) {
+		if (strcmp(argv[3], "id") == 0) {
+			char *aux = NULL;
+			long id = strtol(argv[4], &aux, 10);
+			if (!argv[4][0] || (aux && *aux)) {
+				fprintf(stderr, "ID inválido: %s\n", argv[4]);
+				abb_destruir(abb_por_nombre);
+				abb_destruir(abb_por_id);
+				tp1_destruir(archivo);
+				return 1;
+			}
 			struct pokemon *pokemon =
 				buscar_por_id(abb_por_id, (int)id);
 			mostrar_pokemon_o_error(pokemon);
+
+		} else if (strcmp(argv[3], "nombre") == 0) {
+			struct pokemon *pokemon =
+				buscar_por_nombre(abb_por_nombre, argv[4]);
+			mostrar_pokemon_o_error(pokemon);
+
+		} else {
+			fprintf(stderr,
+				"Clave desconocida, use 'id' o 'nombre'\n");
+			abb_destruir(abb_por_nombre);
+			abb_destruir(abb_por_id);
+			tp1_destruir(archivo);
+			return 1;
 		}
 
-	} else if (argc == 4 && strcmp(argv[2], "nombre") == 0) {
-		struct pokemon *pokemon =
-			buscar_por_nombre(abb_por_nombre, argv[3]);
-		mostrar_pokemon_o_error(pokemon);
+		abb_destruir(abb_por_nombre);
+		abb_destruir(abb_por_id);
+		tp1_destruir(archivo);
+		return 0;
 
 	} else {
 		abb_destruir(abb_por_nombre);
@@ -71,9 +89,4 @@ int main(int argc, char *argv[])
 		tp1_destruir(archivo);
 		return 1;
 	}
-
-	abb_destruir(abb_por_nombre);
-	abb_destruir(abb_por_id);
-	tp1_destruir(archivo);
-	return 0;
 }
