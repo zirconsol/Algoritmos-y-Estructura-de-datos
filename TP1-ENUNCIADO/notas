@@ -1,0 +1,38 @@
+While lee caracter a caracter, usando la libreria stdio de C, verificamos si se trata de un caracter con caracterisitca END OF FILE
+
+Si es asi, evualuamos dos casos, o bien es el primer caracter por lo cual el arch esta vacio, o bien es el final del arch.
+
+Luego hay dos opciones, o bien, el caracter es \n que implica que se termino la linea, o bien es \r que tambien se usa como indicador del final de una linea
+
+Si no se trata de ninguno de los caracteres especiales, entonces anadir se vuelve true, y pasamos a la siguiente condicion
+que es, si hay que agregar el caracter, chequeamos el tamano del buffer, si el buffer usado no alcanza, dinamicamente agrandamos la memoria del buffer.
+
+Luego si el buffer nuevo tiene problemas, se corta antes por error, caso contrario, reasignamos los buffers que teniamos con estos nuevos tamanos
+
+Split por comas, recibe el punter a linea, el puntero al contenido de un campo y un maximo de campos.
+
+La función recorre la cadena, y cada vez que encuentra una coma la reemplaza por '\0'.
+De esta manera convierte la línea en varios strings consecutivos.
+Al mismo tiempo va guardando en el array de salida la dirección de inicio de cada campo. Devuelve cuántos campos guardó, limitado por max_campos.
+
+bool mapeo_tipo_pokemones(char *tipo_leido, enum tipo_pokemon *ptipo)
+
+La funcion recibe el tipo,
+y un puntero apuntando a donde queremos guardadar el valor de enum en memoria
+
+Declara un array con todos los poketipos con su codigo, y los recorre comparando el tipo_leido
+con cada valor d ela tabla, escribiendo el valor del enum con *ptipo si es valido.
+
+
+Para parsear pokemon, recibe la linea, y el puntero donde queremos guardar el pokemon parseado
+
+Declaramos un array de punteros acorde a los campos validos inicializados en 0.
+
+Chequeamos con la funcion split_por_comas si tiene la cantidad de campos validos.
+
+Asignamos null al puntero final_string que usaremos para ver donde corta cada campo.
+
+hacemos un strtol del primer campo desreferenciando a final_string para ver si el campo se parseo correctamente.
+
+
+
