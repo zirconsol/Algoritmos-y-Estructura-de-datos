@@ -1,14 +1,21 @@
-VALGRIND_FLAGS=--leak-check=full --track-origins=yes --show-reachable=yes --error-exitcode=2 --show-leak-kinds=all --trace-children=yes
-CFLAGS =-std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -O2 -g
 CC = gcc
+CFLAGS = -std=c99 -Wall -Wconversion -Wtype-limits -pedantic -Werror -O2 -g -Wno-strict-prototypes
+VALGRIND_FLAGS = --leak-check=full --track-origins=yes --show-reachable=yes --error-exitcode=2 --show-leak-kinds=all --trace-children=yes
 
-all: clean valgrind-alumno
+SRC := $(wildcard src/*.c)
 
-valgrind-alumno: pruebas_alumno
+.PHONY: all run valgrind clean
+
+all: pruebas_alumno
+
+pruebas_alumno: $(SRC) pruebas_alumno.c
+	$(CC) $(CFLAGS) $^ -o $@
+
+run: pruebas_alumno
+	./pruebas_alumno
+
+valgrind: pruebas_alumno
 	valgrind $(VALGRIND_FLAGS) ./pruebas_alumno
 
-pruebas_alumno: src/*.c pruebas_alumno.c
-	$(CC) $(CFLAGS) src/*.c pruebas_alumno.c -o pruebas_alumno
-
 clean:
-	rm -f pruebas_alumno 
+	rm -f pruebas_alumno
